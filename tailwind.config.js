@@ -14,6 +14,14 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                'art-button': '#DEC6D3',
+                'art-coral': '#E76268',
+                'art-navy': '#193948',
+                'art-turquoise': '#4FADC0',
+                'art-charcoal': '#1E1E1E',
+                'art-beige': '#F3EBDD',
+            },
         },
     },
 

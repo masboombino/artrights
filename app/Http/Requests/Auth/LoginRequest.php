@@ -41,15 +41,43 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        try {
+            if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+                RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+                throw ValidationException::withMessages([
+                    'email' => trans('auth.failed'),
+                ]);
+            }
+
+            // Check if user has artist and status is PENDING_VALIDATION or REJECTED
+            $user = Auth::user();
+            if ($user->artist) {
+                if ($user->artist->status === 'PENDING_VALIDATION') {
+                    Auth::logout();
+                    RateLimiter::hit($this->throttleKey());
+
+                    throw ValidationException::withMessages([
+                        'email' => '⏳ Your account is pending admin approval. Please wait for an administrator to review and approve your account before you can log in.',
+                    ]);
+                }
+                
+                if ($user->artist->status === 'REJECTED') {
+                    Auth::logout();
+                    RateLimiter::hit($this->throttleKey());
+
+                    throw ValidationException::withMessages([
+                        'email' => 'These credentials do not match our records.',
+                    ]);
+                }
+            }
+
+            RateLimiter::clear($this->throttleKey());
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Database connection errors will be handled by the Exception Handler
+            // Re-throw to let the Handler process it
+            throw $e;
         }
-
-        RateLimiter::clear($this->throttleKey());
     }
 
     /**

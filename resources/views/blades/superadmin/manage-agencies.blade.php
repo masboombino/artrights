@@ -1,0 +1,50 @@
+<x-allthepages-layout pageTitle="Manage Agencies">
+    <div style="padding: 5px; margin: 5px;">
+        @if(session('success'))
+            <div class="alert-success">
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        <div class="page-container">
+            <div style="overflow-x: auto; width: 100%;">
+                <table class="data-table" style="min-width: 800px;">
+                    <thead>
+                        <tr>
+                            <th>Wilaya</th>
+                            <th>Agency Name</th>
+                            <th>Admin</th>
+                            <th>Gestionnaires</th>
+                            <th>Agents</th>
+                            <th>Artists</th>
+                            <th>Wallet Balance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($agencies as $agency)
+                            <tr>
+                                <td>{{ $agency->wilaya }}</td>
+                                <td>{{ $agency->agency_name }}</td>
+                                <td>{{ $agency->admin->name ?? 'Not assigned' }}</td>
+                                <td>{{ $agency->gestionnaires()->count() }}</td>
+                                <td>{{ $agency->agents()->count() }}</td>
+                                <td>{{ $agency->artists()->count() }}</td>
+                                <td>{{ number_format($agency->wallet->balance ?? 0, 2) }} DZD</td>
+                                <td>
+                                    <a href="{{ route('superadmin.show-agency', $agency) }}" class="secondary-button" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8">No agencies found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</x-allthepages-layout>

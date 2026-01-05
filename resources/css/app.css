@@ -1,3 +1,387 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ArtRights Design System */
+:root {
+    --color-charcoal: #36454f;
+    --color-beige: #F3EBDD;
+    --color-primary-button: #4FADC0;
+    --color-secondary-button: #D6BFBF;
+    --color-coral: #E76268;
+    --color-navy: #193948;
+    --color-turquoise: #4FADC0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Figtree', sans-serif;
+    background-color: var(--color-charcoal);
+    margin: 0;
+    padding: 0;
+}
+
+/* Primary Button */
+.primary-button {
+    background-color: var(--color-secondary-button);
+    color: var(--color-navy);
+    padding: 0.5rem 1.5rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.primary-button:hover {
+    background-color: var(--color-primary-button);
+    color: var(--color-navy);
+    transform: scale(1.05);
+}
+
+/* Secondary Button */
+.secondary-button {
+    background-color: var(--color-primary-button);
+    color: var(--color-navy);
+    padding: 0.5rem 1.5rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background-color: var(--color-secondary-button);
+    color: var(--color-navy);
+    transform: scale(1.05);
+}
+
+/* Danger Button */
+.danger-button {
+    background-color: var(--color-coral);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.danger-button:hover {
+    background-color: #c54d52;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Stat Card */
+.stat-card {
+    background-color: var(--color-beige);
+    border-radius: 1rem;
+    padding: 5px;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    /* No transform - removed zoom effect */
+}
+
+/* Service Card with Vibration */
+.service-card {
+    background-color: var(--color-beige);
+    border-radius: 1rem;
+    padding: 5px;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    animation: vibrate 0.3s ease;
+}
+
+@keyframes vibrate {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Page Container */
+.page-container {
+    background-color: var(--color-beige);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 5px;
+}
+
+/* Form Input */
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--color-navy);
+    border-radius: 0.5rem;
+    color: var(--color-navy);
+    font-size: 1rem;
+    background-color: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-turquoise);
+}
+
+/* Form Label */
+.form-label {
+    display: block;
+    color: var(--color-navy);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Table */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background-color: var(--color-navy);
+}
+
+.data-table th {
+    color: var(--color-beige);
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.data-table tbody tr {
+    border-top: 1px solid rgba(255, 227, 227, 0.1);
+}
+
+.data-table td {
+    color: var(--color-navy);
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+/* Status Badge */
+.status-badge {
+    background-color: var(--color-navy);
+    color: var(--color-beige);
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Alert Success */
+.alert-success {
+    background-color: #d1fae5;
+    border: 2px solid #10b981;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 5px;
+}
+
+.alert-success p {
+    color: #065f46;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Alert Error */
+.alert-error {
+    background-color: #fee2e2;
+    border: 2px solid var(--color-coral);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 5px;
+}
+
+.alert-error p {
+    color: #991b1b;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Notification Icon */
+.notification-icon {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-navy);
+    color: var(--color-beige);
+    transition: all 0.3s ease;
+    margin: 5px;
+}
+
+.notification-icon:hover {
+    transform: translateY(-2px);
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: var(--color-coral);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border: 2px solid var(--color-beige);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .page-container {
+        padding: 2rem 1.5rem;
+        margin: 3px;
+        border-radius: 1rem !important;
+    }
+
+    .stat-card, .service-card {
+        margin: 4px;
+        padding: 4px;
+        border-radius: 1rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 1.5rem 1rem;
+        margin: 3px;
+        border-radius: 1rem !important;
+    }
+
+    .stat-card, .service-card {
+        margin: 3px 0;
+        padding: 3px;
+    }
+
+    .data-table {
+        font-size: 0.9rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-container {
+        padding: 1rem 0.75rem;
+        margin: 2px;
+        border-radius: 1rem !important;
+    }
+
+    .primary-button, .secondary-button, .danger-button {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+        margin: 3px;
+    }
+
+    .stat-card, .service-card {
+        margin: 2px 0;
+        padding: 2px;
+    }
+
+    .form-input {
+        padding: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .data-table {
+        font-size: 0.85rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.5rem 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 0.75rem 0.5rem;
+        margin: 1px;
+        border-radius: 1rem !important;
+    }
+
+    .primary-button, .secondary-button, .danger-button {
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+        margin: 2px;
+    }
+
+    .stat-card, .service-card {
+        margin: 1px 0;
+        padding: 1px;
+    }
+
+    .form-input {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .alert-success, .alert-error {
+        padding: 0.75rem;
+        margin: 3px;
+    }
+
+    .data-table {
+        font-size: 0.8rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.4rem 0.2rem;
+    }
+
+    .notification-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .notification-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 0.65rem;
+    }
+}

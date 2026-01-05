@@ -1,133 +1,988 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Laravel</title>
+        <title>ArtRights - Protecting Artists' Rights</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/jpeg" href="{{ asset('favicon.jpg') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ asset('icons/thefavicon.jpg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
 
-        <!-- Styles -->
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         <style>
-            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}.z-10{z-index: 10}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --primary-dark: #193948;
+                --primary-light: #2a4a5a;
+                --accent-teal: #4FADC0;
+                --accent-cream: #D6BFBF;
+                --bg-cream: #F3EBDD;
+                --bg-dark: #36454f;
+                --text-light: #F3EBDD;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                overflow-x: hidden;
+            }
+
+            body {
+                font-family: 'Figtree', sans-serif;
+                overflow-x: hidden;
+                background-color: var(--bg-dark);
+                color: var(--text-light);
+                line-height: 1.6;
+            }
+
+            /* Animated Background */
+            .animated-bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                background: linear-gradient(135deg, #193948 0%, #2a4a5a 50%, #36454f 100%);
+                overflow: hidden;
+            }
+
+            .animated-bg::before {
+                content: '';
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(79, 173, 192, 0.1) 0%, transparent 70%);
+                animation: rotate 20s linear infinite;
+                top: -50%;
+                left: -50%;
+            }
+
+            .animated-bg::after {
+                content: '';
+                position: absolute;
+                width: 150%;
+                height: 150%;
+                background: radial-gradient(circle, rgba(214, 191, 191, 0.08) 0%, transparent 60%);
+                animation: rotate 15s linear infinite reverse;
+                top: -25%;
+                right: -25%;
+            }
+
+            @keyframes rotate {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
+            /* Floating Particles - Circles */
+            .particle {
+                position: absolute;
+                background: rgba(243, 235, 221, 0.1);
+                border-radius: 50%;
+                animation: float-particle 8s infinite ease-in-out;
+                pointer-events: none;
+            }
+
+            @keyframes float-particle {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 0.2;
+                }
+                50% {
+                    transform: translate(100px, -100px) scale(1.5);
+                    opacity: 0.4;
+                }
+            }
+
+            /* Header */
+            .site-logo-text {
+                font-family: 'Pacifico', cursive;
+                font-size: 2rem;
+                color: #36454f;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .site-logo-text:hover {
+                color: #D6BFBF;
+                transform: scale(1.1) translateY(-3px);
+            }
+
+            .nav-link-btn {
+                background: #D6BFBF;
+                color: #193948;
+                text-decoration: none;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 1rem;
+                transition: all 0.3s ease;
+                display: inline-block;
+                margin: 5px;
+                box-shadow: 0 2px 4px rgba(214, 191, 191, 0.3);
+            }
+
+            .nav-link-btn:hover {
+                background: #4FADC0;
+                color: #193948;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 4px 8px rgba(79, 173, 192, 0.4);
+            }
+
+            .nav-btn-primary {
+                background: #4FADC0;
+                color: #193948;
+                text-decoration: none;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 1rem;
+                transition: all 0.3s ease;
+                display: inline-block;
+                margin: 5px;
+                box-shadow: 0 2px 4px rgba(79, 173, 192, 0.3);
+            }
+
+            .nav-btn-primary:hover {
+                background: #D6BFBF;
+                color: #193948;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 4px 8px rgba(214, 191, 191, 0.4);
+            }
+
+            /* Hero Section */
+            .hero-section {
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                position: relative;
+                padding: 1rem 2rem 4rem;
+                overflow: hidden;
+                padding-top: 3rem;
+            }
+
+            .hero-content {
+                max-width: 1200px;
+                text-align: center;
+                z-index: 10;
+                position: relative;
+                margin-top: 2rem;
+            }
+
+            .hero-title {
+                font-family: 'Pacifico', cursive;
+                font-size: clamp(2.5rem, 6vw, 4rem);
+                font-weight: 400;
+                color: var(--text-light);
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                text-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 20px rgba(243, 235, 221, 0.5);
+                animation: fadeInUp 1s ease 0.2s both;
+                white-space: nowrap;
+            }
+
+            .hero-subtitle {
+                font-size: clamp(1.2rem, 3vw, 1.8rem);
+                color: rgba(243, 235, 221, 0.9);
+                margin-bottom: 2rem;
+                font-weight: 400;
+                line-height: 1.6;
+                animation: fadeInUp 1s ease 0.4s both;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-container {
+                background-color: transparent;
+                border: 3px solid #D6BFBF;
+                border-radius: 16px;
+                padding: 3rem;
+                margin: 0 auto;
+                max-width: 900px;
+                animation: fadeInUp 1s ease 0.6s both;
+                box-shadow: 0 0 20px rgba(214, 191, 191, 0.4), 0 0 40px rgba(214, 191, 191, 0.2), inset 0 0 20px rgba(214, 191, 191, 0.1);
+                animation: fadeInUp 1s ease 0.6s both, glow-border 3s ease-in-out infinite;
+            }
+
+            @keyframes glow-border {
+                0%, 100% {
+                    box-shadow: 0 0 20px rgba(214, 191, 191, 0.4), 0 0 40px rgba(214, 191, 191, 0.2), inset 0 0 20px rgba(214, 191, 191, 0.1);
+                }
+                50% {
+                    box-shadow: 0 0 30px rgba(214, 191, 191, 0.6), 0 0 60px rgba(214, 191, 191, 0.4), inset 0 0 30px rgba(214, 191, 191, 0.2);
+                }
+            }
+
+            .hero-description {
+                font-size: clamp(1rem, 2vw, 1.2rem);
+                color: rgba(243, 235, 221, 0.95);
+                margin-bottom: 2rem;
+                line-height: 1.8;
+            }
+
+            .hero-buttons {
+                display: flex;
+                gap: 1.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                animation: fadeInUp 1s ease 0.8s both;
+            }
+
+            .btn-hero {
+                padding: 0.75rem 2rem;
+                border-radius: 1rem;
+                text-decoration: none;
+                font-weight: 700;
+                transition: all 0.3s ease;
+                border: none;
+                display: inline-block;
+                box-shadow: 0 4px 6px rgba(79, 173, 192, 0.3);
+            }
+
+            .btn-hero-primary {
+                background: #4FADC0;
+                color: #193948;
+            }
+
+            .btn-hero-primary:hover {
+                background: #D6BFBF;
+                color: #193948;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 6px 12px rgba(214, 191, 191, 0.4);
+            }
+
+            .btn-hero-secondary {
+                background: #D6BFBF;
+                color: #193948;
+                box-shadow: 0 4px 6px rgba(214, 191, 191, 0.3);
+            }
+
+            .btn-hero-secondary:hover {
+                background: #4FADC0;
+                color: #193948;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 6px 12px rgba(79, 173, 192, 0.4);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Features Section */
+            .features-section {
+                padding: 3rem 2rem;
+                position: relative;
+            }
+
+            .section-header {
+                text-align: center;
+                max-width: 800px;
+                margin: 0 auto 5rem;
+            }
+
+            .section-badge {
+                display: inline-block;
+                padding: 0.5rem 1.5rem;
+                background: rgba(79, 173, 192, 0.2);
+                border: 2px solid rgba(79, 173, 192, 0.3);
+                border-radius: 3rem;
+                color: var(--accent-teal);
+                font-size: 0.9rem;
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+            }
+
+            .section-title {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(2.5rem, 6vw, 4.5rem);
+                font-weight: 900;
+                color: var(--text-light);
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+            }
+
+            .section-subtitle {
+                font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+                color: rgba(243, 235, 221, 0.8);
+                line-height: 1.6;
+            }
+
+            .features-grid {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 2.5rem;
+            }
+
+            .feature-card {
+                background: rgba(243, 235, 221, 0.05);
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(243, 235, 221, 0.1);
+                border-radius: 2rem;
+                padding: 3rem;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .feature-card::after {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(79, 173, 192, 0.1) 0%, transparent 70%);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+
+            .feature-card:hover::after {
+                opacity: 1;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-15px);
+                border-color: var(--accent-teal);
+                box-shadow: 0 20px 50px rgba(79, 173, 192, 0.2);
+                background: rgba(243, 235, 221, 0.08);
+            }
+
+            .feature-icon {
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                display: inline-block;
+                animation: float-icon 3s ease-in-out infinite;
+            }
+
+            @keyframes float-icon {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .feature-title {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--text-light);
+                margin-bottom: 1rem;
+            }
+
+            .feature-description {
+                font-size: 1.05rem;
+                color: rgba(243, 235, 221, 0.8);
+                line-height: 1.7;
+            }
+
+            /* About Section */
+            .about-section {
+                padding: 8rem 2rem;
+                background: linear-gradient(180deg, transparent 0%, rgba(243, 235, 221, 0.03) 50%, transparent 100%);
+            }
+
+            .about-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+                align-items: center;
+            }
+
+            .about-content h2 {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(2.5rem, 5vw, 4rem);
+                font-weight: 900;
+                color: var(--text-light);
+                margin-bottom: 2rem;
+                line-height: 1.2;
+            }
+
+            .about-content p {
+                font-size: 1.2rem;
+                color: rgba(243, 235, 221, 0.9);
+                line-height: 1.8;
+                margin-bottom: 1.5rem;
+            }
+
+            .about-visual {
+                position: relative;
+                height: 500px;
+            }
+
+            .visual-card {
+                position: absolute;
+                background: rgba(243, 235, 221, 0.1);
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(243, 235, 221, 0.2);
+                border-radius: 2rem;
+                padding: 2rem;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+
+            .visual-card:nth-child(1) {
+                top: 0;
+                left: 0;
+                width: 60%;
+                animation: float-card 4s ease-in-out infinite;
+            }
+
+            .visual-card:nth-child(2) {
+                bottom: 0;
+                right: 0;
+                width: 60%;
+                animation: float-card 4s ease-in-out infinite 2s;
+            }
+
+            @keyframes float-card {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(2deg); }
+            }
+
+            /* CTA Section */
+            .cta-section {
+                padding: 8rem 2rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cta-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                text-align: center;
+                background: linear-gradient(135deg, rgba(79, 173, 192, 0.2) 0%, rgba(25, 57, 72, 0.3) 100%);
+                backdrop-filter: blur(20px);
+                border: 2px solid rgba(243, 235, 221, 0.2);
+                border-radius: 3rem;
+                padding: 5rem 3rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cta-container::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(79, 173, 192, 0.1) 0%, transparent 70%);
+                animation: rotate 15s linear infinite;
+            }
+
+            .cta-title {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(2.5rem, 6vw, 4rem);
+                font-weight: 900;
+                color: var(--text-light);
+                margin-bottom: 1.5rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .cta-text {
+                font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+                color: rgba(243, 235, 221, 0.9);
+                margin-bottom: 3rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .cta-buttons {
+                display: flex;
+                gap: 1.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Footer */
+            .main-footer {
+                background: linear-gradient(180deg, transparent 0%, rgba(25, 57, 72, 0.5) 100%);
+                padding: 4rem 2rem 2rem;
+                border-top: 3px solid rgba(243, 235, 221, 0.2);
+            }
+
+            .footer-content {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .footer-top {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .footer-logo-section {
+                display: flex;
+                align-items: center;
+                gap: 0;
+            }
+
+            .footer-logo {
+                width: 90px;
+                height: 90px;
+                object-fit: contain;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                background: linear-gradient(135deg, #F3EBDD 0%, #D6BFBF 100%);
+                box-shadow: 0 0 15px rgba(243, 235, 221, 0.4), 0 0 30px rgba(214, 191, 191, 0.25), inset 0 0 10px rgba(243, 235, 221, 0.2);
+                animation: glow-pulse 3s ease-in-out infinite;
+            }
+
+            @keyframes glow-pulse {
+                0%, 100% {
+                    box-shadow: 0 0 15px rgba(243, 235, 221, 0.4), 0 0 30px rgba(214, 191, 191, 0.25), inset 0 0 10px rgba(243, 235, 221, 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 25px rgba(243, 235, 221, 0.6), 0 0 50px rgba(214, 191, 191, 0.4), inset 0 0 15px rgba(243, 235, 221, 0.3);
+                }
+            }
+
+            .footer-logo:hover {
+                transform: scale(1.1);
+            }
+
+            .footer-text-section {
+                flex: 1;
+                text-align: left;
+                padding-left: 100px;
+            }
+
+            .footer-text {
+                font-size: 1rem;
+                color: rgba(243, 235, 221, 0.9);
+                margin: 0.25rem 0;
+            }
+
+            .footer-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.75rem;
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 0.4rem;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+            }
+
+            .footer-link {
+                color: var(--text-light);
+                text-decoration: none;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.5rem;
+                transition: all 0.3s ease;
+                font-weight: 500;
+                font-size: 0.9rem;
+            }
+
+            .footer-link:hover {
+                background-color: rgba(25, 57, 72, 0.5);
+                transform: translateY(-2px);
+            }
+
+            .footer-social {
+                display: flex;
+                gap: 0.75rem;
+                justify-content: flex-end;
+            }
+
+            .footer-social-link {
+                width: 45px;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(25, 57, 72, 0.5);
+                color: var(--text-light);
+                border-radius: 50%;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                font-size: 1.3rem;
+            }
+
+            .footer-social-link:hover {
+                background-color: var(--accent-teal);
+                transform: scale(1.1) rotate(5deg);
+            }
+
+            /* Responsive */
+            @media (max-width: 1024px) {
+                .about-container {
+                    grid-template-columns: 1fr;
+                    gap: 3rem;
+                }
+
+                .about-visual {
+                    height: 400px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .hero-title {
+                    font-size: 2.5rem;
+                    white-space: normal;
+                }
+
+                .section-title {
+                    font-size: 2.5rem;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .footer-top {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .footer-text-section {
+                    padding-left: 0;
+                    text-align: center;
+                }
+
+                .footer-actions {
+                    align-items: center;
+                }
+
+                .site-logo-text {
+                    font-size: 1.5rem;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .hero-section {
+                    padding: 1rem;
+                    padding-top: 2rem;
+                }
+
+                .hero-container {
+                    padding: 2rem 1.5rem;
+                }
+
+                .btn-hero {
+                    padding: 0.75rem 1.5rem;
+                    font-size: 0.95rem;
+                }
+            }
         </style>
     </head>
-    <body class="antialiased">
-        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-            @if (Route::has('login'))
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+    <body>
+        <div class="animated-bg"></div>
 
-            <div class="max-w-7xl mx-auto p-6 lg:p-8">
-                <div class="flex justify-center">
-                    <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
-                        <path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="#FF2D20"/>
-                    </svg>
-                </div>
+        <!-- Header -->
+        <header style="background-color: #F3EBDD; border-bottom: 4px solid #193948; padding: 1rem 2rem; position: relative; min-height: 85px; display: flex; align-items: center;">
+            <div class="max-w-7xl mx-auto" style="width: 100%;">
+                <div class="flex justify-between items-center gap-4" style="height: 100%;">
 
-                <div class="mt-16">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                        <a href="https://laravel.com/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
+                    <!-- Site Name with Icon -->
+                    <div class="flex items-center gap-3">
+                        <a href="/" style="display: flex; align-items: stretch; text-decoration: none; position: relative; margin: -1rem 0; height: calc(85px); align-self: flex-end;">
+                            <img src="{{ asset('icons/logo.png') }}" alt="ArtRights Logo" style="width: 35px; height: 100%; object-fit: contain;">
                         </a>
-
-                        <a href="https://laracasts.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
+                        <a href="/" class="site-logo-text">
+                            ArtRights
                         </a>
-
-                        <a href="https://laravel-news.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
-                        </a>
-
-                        <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>, <a href="https://vapor.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>, <a href="https://nova.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>, and <a href="https://envoyer.io" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>, and more.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
-                    <div class="text-center text-sm sm:text-left">
-                        &nbsp;
                     </div>
 
-                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                    <!-- Navigation -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="nav-link-btn">Dashboard</a>
+                        @else
+                            <a href="{{ route('support') }}" class="nav-link-btn">Support</a>
+                            <a href="{{ route('login') }}" class="nav-link-btn">Log In</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="nav-btn-primary">Sign Up</a>
+                            @endif
+                        @endauth
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Protect Your Creative Works</h1>
+                <p class="hero-subtitle">A platform designed for protecting intellectual property rights of artists in Algeria</p>
+                <div class="hero-container">
+                    <p class="hero-description">
+                        Register your artistic works, connect with provincial agencies across the country, and ensure your creations are legally protected through our management system. You will receive compensation for your artworks that are used illegally.
+                    </p>
+                    <div class="hero-buttons">
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="btn-hero btn-hero-primary">Go to Dashboard</a>
+                        @else
+                            <a href="{{ route('register') }}" class="btn-hero btn-hero-primary">Get Started</a>
+                            <a href="{{ route('login') }}" class="btn-hero btn-hero-secondary">Log In</a>
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="section-header">
+                <div class="section-badge">Platform Services</div>
+                <h2 class="section-title">Everything You Need to Protect Your Art</h2>
+                <p class="section-subtitle">A complete ecosystem designed to safeguard your intellectual property rights with official registration, field inspections, and legal protection</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">Official Artist Registration</h3>
+                    <p class="feature-description">
+                        Complete registration system with identity verification and document validation. Get officially recognized as an artist with our streamlined process.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Artwork Registration</h3>
+                    <p class="feature-description">
+                        Register all your creative works including music, books, films, paintings, digital art, and more. Each work gets a unique registration ID.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏛️</div>
+                    <h3 class="feature-title">Nationwide Agency Network</h3>
+                    <p class="feature-description">
+                        Comprehensive coverage through 58 provincial agencies across Algeria. Local support and management in every region.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👮</div>
+                    <h3 class="feature-title">Field Inspection System</h3>
+                    <p class="feature-description">
+                        Professional agents conduct on-site inspections to detect and document unauthorized use of your registered artworks.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Automated Compensation</h3>
+                    <p class="feature-description">
+                        Smart calculation and processing system for compensation when violations are verified. Fast and transparent payment processing.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3 class="feature-title">Complaint Management</h3>
+                    <p class="feature-description">
+                        File formal complaints for unauthorized use. Track your complaints through the entire process with real-time updates.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Legal Protection</h3>
+                    <p class="feature-description">
+                        Full legal framework support with process-verbals (PVs) and official documentation. Your rights are legally enforceable.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Analytics & Reports</h3>
+                    <p class="feature-description">
+                        Track your artworks' status, view usage statistics, monitor violations, and access comprehensive reports.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <div class="about-container">
+                <div class="about-content">
+                    <h2>About ArtRights</h2>
+                    <p>
+                        ArtRights is a platform dedicated to protecting intellectual property rights of artists throughout Algeria. 
+                        We provide a system that bridges the gap between artists and legal protection.
+                    </p>
+                    <p>
+                        Our mission is to ensure that every creative work is properly registered, legally protected, and that artists receive 
+                        fair compensation for the use of their intellectual property. Through our network of 58 provincial agencies, we bring 
+                        protection services directly to artists in every region.
+                    </p>
+                    <p>
+                        With field inspection systems, compensation processing, and a complete complaint management framework, 
+                        ArtRights offers a solution for intellectual property protection in Algeria.
+                    </p>
+                </div>
+                <div class="about-visual">
+                    <div class="visual-card">
+                        <h3 style="color: var(--text-light); margin-bottom: 1rem; font-size: 1.5rem;">🎯 Our Mission</h3>
+                        <p style="color: rgba(243, 235, 221, 0.9); line-height: 1.6;">
+                            To protect and preserve the intellectual property rights of every artist in Algeria through technology and legal support.
+                        </p>
+                    </div>
+                    <div class="visual-card">
+                        <h3 style="color: var(--text-light); margin-bottom: 1rem; font-size: 1.5rem;">✨ Our Vision</h3>
+                        <p style="color: rgba(243, 235, 221, 0.9); line-height: 1.6;">
+                            To protect artists' rights, reduce piracy and unauthorized use of creative works, and ensure that every artist receives fair compensation for their intellectual property.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-container">
+                <h2 class="cta-title">Ready to Protect Your Art?</h2>
+                <p class="cta-text">Join artists who trust ArtRights to safeguard their creative works and intellectual property rights</p>
+                <div class="cta-buttons">
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="btn-hero btn-hero-primary">Go to Dashboard</a>
+                    @else
+                        <a href="{{ route('register') }}" class="btn-hero btn-hero-primary">Start Protecting Your Art</a>
+                        <a href="{{ route('login') }}" class="btn-hero btn-hero-secondary">Log In</a>
+                    @endauth
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        @php
+            $footerSettings = \App\Models\FooterSetting::getSettings();
+        @endphp
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-top">
+                    <div style="display: flex; align-items: center; gap: 0; margin: 0; padding: 0;">
+                        @if($footerSettings->logo_path)
+                            <div class="footer-logo-section" style="margin: 0; padding: 0;">
+                                <a href="{{ $footerSettings->ayrade_url ?? $footerSettings->website_url ?? url('/') }}" target="_blank" style="margin: 0; padding: 0; display: block;">
+                                    <img src="{{ asset('storage/' . $footerSettings->logo_path) }}" alt="Ayrade Logo" class="footer-logo" style="margin: 0; display: block;">
+                                </a>
+                            </div>
+                        @endif
+                        <div class="footer-text-section" style="margin: 0; padding: 0; padding-left: 100px; text-align: left;">
+                            @if($footerSettings->copyright_text)
+                                <p class="footer-text">
+                                    @php
+                                        $copyrightText = $footerSettings->copyright_text;
+                                        if ($footerSettings->ayrade_url) {
+                                            $copyrightText = preg_replace('/\bAyrade\b/', '<a href="' . e($footerSettings->ayrade_url) . '" target="_blank" style="color: #D6BFBF; text-decoration: underline; transition: all 0.3s ease;" onmouseover="this.style.color=\'#4FADC0\'" onmouseout="this.style.color=\'#D6BFBF\'">Ayrade</a>', $copyrightText);
+                                        }
+                                        echo $copyrightText;
+                                    @endphp
+                                </p>
+                            @endif
+                            @if($footerSettings->developer_text)
+                                <p class="footer-text">
+                                    @php
+                                        $developerText = $footerSettings->developer_text;
+                                        if ($footerSettings->mahdid_anes_url) {
+                                            $developerText = preg_replace('/\bMahdid Anes\b/', '<a href="' . e($footerSettings->mahdid_anes_url) . '" target="_blank" style="color: #D6BFBF; text-decoration: underline; transition: all 0.3s ease;" onmouseover="this.style.color=\'#4FADC0\'" onmouseout="this.style.color=\'#D6BFBF\'">Mahdid Anes</a>', $developerText);
+                                        }
+                                        echo $developerText;
+                                    @endphp
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="footer-actions">
+                        <div class="footer-links">
+                            @if($footerSettings->facebook_url)
+                                <a href="{{ $footerSettings->facebook_url }}" class="footer-link" target="_blank">Facebook</a>
+                            @endif
+                            @if($footerSettings->twitter_url)
+                                <a href="{{ $footerSettings->twitter_url }}" class="footer-link" target="_blank">Twitter</a>
+                            @endif
+                            @if($footerSettings->instagram_url)
+                                <a href="{{ $footerSettings->instagram_url }}" class="footer-link" target="_blank">Instagram</a>
+                            @endif
+                            @if($footerSettings->linkedin_url)
+                                <a href="{{ $footerSettings->linkedin_url }}" class="footer-link" target="_blank">LinkedIn</a>
+                            @endif
+                            @if($footerSettings->youtube_url)
+                                <a href="{{ $footerSettings->youtube_url }}" class="footer-link" target="_blank">YouTube</a>
+                            @endif
+                            @if($footerSettings->support_url)
+                                <a href="{{ $footerSettings->support_url }}" class="footer-link" target="_blank">Support</a>
+                            @endif
+                            @if($footerSettings->help_url)
+                                <a href="{{ $footerSettings->help_url }}" class="footer-link" target="_blank">Help</a>
+                            @endif
+                            @if($footerSettings->maps_url)
+                                <a href="{{ $footerSettings->maps_url }}" class="footer-link" target="_blank">Our Location</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Create floating particles (circles only)
+            function createParticles() {
+                const bg = document.querySelector('.animated-bg');
+                
+                // Create floating circles (particles) - more and faster
+                for (let i = 0; i < 35; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const size = Math.random() * 80 + 40;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = (Math.random() * 3 + 6) + 's';
+                    bg.appendChild(particle);
+                }
+            }
+
+            createParticles();
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
