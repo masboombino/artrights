@@ -13,6 +13,7 @@ class Agency extends Model
         'agency_name',
         'wilaya',
         'admin_id',
+        'bank_account_number',
     ];
 
     public function agents()

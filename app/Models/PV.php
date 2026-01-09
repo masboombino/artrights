@@ -124,6 +124,35 @@ class PV extends Model
         $this->save();
     }
 
+    public function canClosePV(): bool
+    {
+        // Cannot close if already finalized
+        if ($this->isFinalized()) {
+            return false;
+        }
+
+        // Cannot close if already closed
+        if ($this->status === 'CLOSED') {
+            return false;
+        }
+
+        // Payment must be confirmed by agent
+        if (!$this->agent_payment_confirmed) {
+            return false;
+        }
+
+        // Payment amount must match total amount (with small tolerance for floating point)
+        $totalAmount = $this->total_amount;
+        $receivedAmount = $this->cash_received_amount ?? 0;
+        $difference = abs($receivedAmount - $totalAmount);
+
+        if ($difference > 0.01) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function evidenceFiles(): array
     {
         if (!$this->file_path) {

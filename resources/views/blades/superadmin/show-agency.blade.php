@@ -30,6 +30,27 @@
             </div>
         </div>
 
+        <div class="rounded-lg shadow-lg p-6 mb-6" style="background-color: #F3EBDD; border: 3px solid #193948;">
+            <h2 class="text-2xl font-bold mb-4" style="color: #193948;">🏦 Bank Account Number</h2>
+            <form action="{{ route('superadmin.update-agency-bank-account', $agency->id) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="bank_account_number" class="block text-sm font-medium mb-2" style="color: #193948;">Agency Bank Account Number</label>
+                    <input type="text" name="bank_account_number" id="bank_account_number" 
+                           value="{{ old('bank_account_number', $agency->bank_account_number) }}"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           style="background-color: white; color: #193948;"
+                           placeholder="Enter bank account number">
+                    @error('bank_account_number')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <button type="submit" class="rounded transition hover:opacity-90" style="background-color: #193948; color: #4FADC0; padding: 0.75rem 1.5rem;">
+                    Save
+                </button>
+            </form>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="rounded-lg shadow overflow-hidden" style="background-color: #F3EBDD;">
                 <div class="p-4 flex justify-between items-center" style="background-color: #193948;">

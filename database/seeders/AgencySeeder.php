@@ -33,7 +33,10 @@ class AgencySeeder extends Seeder
         foreach ($agencies as $agency) {
             Agency::firstOrCreate(
                 ['agency_name' => $agency['agency_name']],
-                ['wilaya' => $agency['wilaya']]
+                [
+                    'wilaya' => $agency['wilaya'],
+                    'bank_account_number' => null, // سيتم إضافته لاحقاً من قبل السوبر أدمين
+                ]
             );
         }
         

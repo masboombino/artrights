@@ -6,6 +6,12 @@
             </div>
         @endif
 
+        @if(session('warning'))
+            <div class="rounded p-4" style="background-color: #fef3c7; border: 2px solid #f59e0b; color: #92400e;">
+                <strong>⚠️ Warning:</strong> {{ session('warning') }}
+            </div>
+        @endif
+
         @if($errors->any())
             <div class="rounded p-4" style="background-color: #fee2e2; color: #991b1b;">
                 <ul class="list-disc ml-5">
@@ -38,8 +44,45 @@
                             Payment: {{ $pv->payment_method ?? 'N/A' }} / {{ $pv->payment_status }}
                         </span>
                     </div>
-                    <div class="text-2xl font-bold" style="color: #193948;">
+                    <div class="text-2xl font-bold mb-3" style="color: #193948;">
                         Total: {{ number_format($pv->total_amount, 2) }} DZD
+                    </div>
+                    <div class="flex flex-wrap gap-2 justify-end">
+                        @if($pv->canClosePV())
+                            <form method="POST" action="{{ route('agent.pvs.close', $pv) }}" style="display: inline;" id="closePvForm">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-2 rounded-lg shadow-lg transition hover:opacity-90 px-4 py-2 font-semibold text-sm" style="background-color: #10b981; color: white;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Close the PV
+                                </button>
+                            </form>
+                        @else
+                            <button type="button" disabled class="inline-flex items-center gap-2 rounded-lg shadow transition px-4 py-2 font-semibold text-sm opacity-50 cursor-not-allowed" style="background-color: #9ca3af; color: white;" title="Cannot close PV: Payment must be confirmed and amount must match total.">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Close the PV
+                            </button>
+                        @endif
+                        @if($pv->status === 'OPEN')
+                            <a href="{{ route('agent.pvs.create') }}" class="inline-flex items-center gap-2 rounded-lg shadow-lg transition hover:opacity-90 px-4 py-2 font-semibold text-sm" style="background-color: #4FADC0; color: white;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Edit PV
+                            </a>
+                        @else
+                            <button type="button" disabled class="inline-flex items-center gap-2 rounded-lg shadow transition px-4 py-2 font-semibold text-sm opacity-50 cursor-not-allowed" style="background-color: #9ca3af; color: white;" title="Cannot edit PV: PV must be in OPEN status.">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Edit PV
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -165,21 +208,30 @@
             @if(!$pv->agent_payment_confirmed)
                 <div class="rounded-lg shadow p-6" style="background-color: #F3EBDD;">
                     <h3 class="text-xl font-semibold mb-4" style="color: #193948;">Confirm Payment Receipt</h3>
+                    @if($pv->agency && $pv->agency->bank_account_number)
+                        <div class="mb-4 p-3 rounded" style="background-color: #dbeafe; border: 2px solid #3b82f6;">
+                            <p class="text-sm font-semibold mb-1" style="color: #193948;">🏦 Agency Bank Account Number:</p>
+                            <p class="text-lg font-bold" style="color: #1e40af;">{{ $pv->agency->bank_account_number }}</p>
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('agent.pvs.payment', $pv) }}" class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-sm font-semibold mb-1" style="color: #193948;">Payment Method</label>
                             <select name="payment_method" class="w-full rounded border p-2" required>
                                 <option value="">Select</option>
-                                <option value="CASH" @selected($pv->payment_method === 'CASH')>Cash</option>
-                                <option value="CHEQUE" @selected($pv->payment_method === 'CHEQUE')>Cheque</option>
+                                <option value="CASH" @selected($pv->payment_method === 'CASH' || old('payment_method') === 'CASH')>Cash</option>
+                                <option value="CHEQUE" @selected($pv->payment_method === 'CHEQUE' || old('payment_method') === 'CHEQUE')>Cheque</option>
                             </select>
                             <p class="text-xs mt-1" style="color: #193948;">Use cash when you collected money. Choose cheque when you received a cheque.</p>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-1" style="color: #193948;">Amount Received from Client</label>
-                            <input type="number" step="0.01" name="cash_received_amount" value="{{ old('cash_received_amount', $pv->total_amount) }}" class="w-full rounded border p-2" required>
+                            <input type="number" step="0.01" name="cash_received_amount" value="{{ old('cash_received_amount', $pv->total_amount) }}" class="w-full rounded border p-2 @error('cash_received_amount') border-red-500 @enderror" required>
                             <p class="text-xs mt-1" style="color: #193948;">PV Total: {{ number_format($pv->total_amount, 2) }} DZD</p>
+                            @error('cash_received_amount')
+                                <p class="text-xs mt-1" style="color: #991b1b;">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="flex items-center gap-2">
                             <input type="checkbox" name="agent_payment_confirmed" value="1" id="confirm_payment" class="rounded">
@@ -221,19 +273,21 @@
                 @endif
             </div>
 
-            <div class="rounded-lg shadow p-6" style="background-color: #F3EBDD;">
-                <h3 class="text-xl font-semibold mb-4" style="color: #193948;">Close PV</h3>
-                <form method="POST" action="{{ route('agent.pvs.close', $pv) }}" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-semibold mb-1" style="color: #193948;">Notes</label>
-                        <textarea name="notes" rows="4" class="w-full rounded border p-2">{{ old('notes', $pv->notes) }}</textarea>
-                    </div>
-                    <button type="submit" class="rounded px-4 py-2 font-semibold" style="background-color: #D6BFBF; color: #193948;">
-                        Mark as Closed
-                    </button>
-                </form>
-            </div>
+            @if($pv->status !== 'CLOSED' && $pv->canClosePV())
+                <div class="rounded-lg shadow p-6" style="background-color: #F3EBDD;">
+                    <h3 class="text-xl font-semibold mb-4" style="color: #193948;">Close PV</h3>
+                    <form method="POST" action="{{ route('agent.pvs.close', $pv) }}" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-semibold mb-1" style="color: #193948;">Notes</label>
+                            <textarea name="notes" rows="4" class="w-full rounded border p-2">{{ old('notes', $pv->notes) }}</textarea>
+                        </div>
+                        <button type="submit" class="rounded px-4 py-2 font-semibold" style="background-color: #10b981; color: white;">
+                            Mark as Closed
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 </x-allthepages-layout>

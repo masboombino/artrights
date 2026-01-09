@@ -15,6 +15,27 @@
             </div>
         @endif
 
+        <!-- Filters -->
+        <div class="stat-card" style="padding: 1rem; margin-bottom: 10px;">
+            <form method="GET" action="{{ route('agent.pvs.index') }}" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <label style="color: #193948; font-weight: 600; font-size: 0.9rem;">Filter by Status:</label>
+                <select name="status" style="padding: 8px 16px; border: 2px solid #193948; color: #193948; background-color: white; font-size: 0.9rem; border-radius: 0.5rem;">
+                    <option value="">All Status</option>
+                    <option value="OPEN" {{ request('status') === 'OPEN' ? 'selected' : '' }}>Open</option>
+                    <option value="PENDING" {{ request('status') === 'PENDING' ? 'selected' : '' }}>Pending</option>
+                    <option value="CLOSED" {{ request('status') === 'CLOSED' ? 'selected' : '' }}>Closed</option>
+                </select>
+                <button type="submit" class="primary-button" style="padding: 8px 20px; font-size: 0.9rem;">
+                    Apply Filter
+                </button>
+                @if(request('status'))
+                    <a href="{{ route('agent.pvs.index') }}" class="secondary-button" style="padding: 8px 20px; font-size: 0.9rem; text-decoration: none;">
+                        Clear
+                    </a>
+                @endif
+            </form>
+        </div>
+
         @if($pvs->count() > 0)
             <div style="background-color: #F3EBDD; border-radius: 1rem; margin: 5px; padding: 1.5rem; overflow-x: auto;">
                 <table class="data-table">

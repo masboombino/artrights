@@ -1505,7 +1505,7 @@ class AdminController extends Controller
         }
 
         $missions = $query->orderByDesc('scheduled_at')
-            ->paginate(15);
+            ->paginate(15)->withQueryString();
 
         return view('blades.admin.manage-missions', compact('missions'));
     }

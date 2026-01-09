@@ -133,8 +133,9 @@
                 border-radius: 1rem;
                 transition: all 0.3s ease;
                 display: inline-block;
-                margin: 5px;
+                margin: 0;
                 box-shadow: 0 2px 4px rgba(214, 191, 191, 0.3);
+                white-space: nowrap;
             }
 
             .nav-link-btn:hover {
@@ -153,8 +154,9 @@
                 border-radius: 1rem;
                 transition: all 0.3s ease;
                 display: inline-block;
-                margin: 5px;
+                margin: 0;
                 box-shadow: 0 2px 4px rgba(79, 173, 192, 0.3);
+                white-space: nowrap;
             }
 
             .nav-btn-primary:hover {
@@ -682,6 +684,16 @@
                 .site-logo-text {
                     font-size: 1.5rem;
                 }
+
+                header {
+                    padding: 0.75rem 1rem !important;
+                }
+
+                .nav-link-btn,
+                .nav-btn-primary {
+                    padding: 0.4rem 0.75rem;
+                    font-size: 0.875rem;
+                }
             }
 
             @media (max-width: 640px) {
@@ -697,6 +709,30 @@
                 .btn-hero {
                     padding: 0.75rem 1.5rem;
                     font-size: 0.95rem;
+                }
+
+                header {
+                    padding: 0.5rem 0.75rem !important;
+                    min-height: auto !important;
+                }
+
+                header > div > div {
+                    flex-wrap: nowrap !important;
+                    gap: 0.5rem !important;
+                }
+
+                .site-logo-text {
+                    font-size: 1.25rem !important;
+                }
+
+                .nav-link-btn,
+                .nav-btn-primary {
+                    padding: 0.35rem 0.6rem !important;
+                    font-size: 0.8rem !important;
+                }
+
+                header a img {
+                    width: 28px !important;
                 }
             }
         </style>
@@ -721,7 +757,7 @@
                     </div>
 
                     <!-- Navigation -->
-                    <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2" style="flex-wrap: nowrap; flex-shrink: 0;">
                         @auth
                             <a href="{{ url('/dashboard') }}" class="nav-link-btn">Dashboard</a>
                         @else

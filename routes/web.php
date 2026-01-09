@@ -86,6 +86,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
     
     Route::get('/agencies', [SuperAdminController::class, 'manageAgencies'])->name('manage-agencies');
     Route::get('/agencies/{id}', [SuperAdminController::class, 'showAgency'])->name('show-agency');
+    Route::post('/agencies/{id}/bank-account', [SuperAdminController::class, 'updateAgencyBankAccount'])->name('update-agency-bank-account');
     Route::get('/agencies/{id}/assign-admin', [SuperAdminController::class, 'assignAgencyAdmin'])->name('assign-agency-admin');
     Route::post('/agencies/{id}/assign-admin', [SuperAdminController::class, 'storeAgencyAdmin'])->name('store-agency-admin');
     Route::delete('/agencies/{id}/admin', [SuperAdminController::class, 'removeAgencyAdmin'])->name('remove-agency-admin');

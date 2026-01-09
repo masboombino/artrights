@@ -29,7 +29,7 @@ class MissionController extends Controller
             $query->where('status', $request->status);
         }
 
-        $missions = $query->orderByDesc('scheduled_at')->paginate(10);
+        $missions = $query->orderByDesc('scheduled_at')->paginate(10)->withQueryString();
 
         return view('blades.gestionnaire.missions.index', compact('missions'));
     }

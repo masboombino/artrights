@@ -58,6 +58,26 @@ class WalletController extends Controller
             'amount' => 'required|numeric|min:0',
         ]);
 
+        // Verify that payment amount equals total amount exactly (must pay exactly)
+        $totalAmount = $pv->total_amount;
+        $receivedAmount = $data['amount'];
+        $difference = abs($receivedAmount - $totalAmount);
+
+        if ($difference > 0.01) { // Allow small floating point differences
+            if ($receivedAmount < $totalAmount) {
+                $remainingAmount = $totalAmount - $receivedAmount;
+                return redirect()->back()->withErrors(['amount' => 'Cannot confirm payment: Amount received (' . number_format($receivedAmount, 2) . ' DZD) is less than required amount (' . number_format($totalAmount, 2) . ' DZD). Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD. Payment must be complete before validation.']);
+            } else {
+                return redirect()->back()->withErrors(['amount' => 'Cannot confirm payment: Amount received (' . number_format($receivedAmount, 2) . ' DZD) exceeds required amount (' . number_format($totalAmount, 2) . ' DZD). Payment amount must match exactly.']);
+            }
+        }
+
+        // Also verify that agent confirmed amount matches
+        $agentConfirmedAmount = $pv->cash_received_amount ?? 0;
+        if (abs($agentConfirmedAmount - $totalAmount) > 0.01) {
+            return redirect()->back()->withErrors(['amount' => 'Cannot confirm payment: Agent confirmed amount (' . number_format($agentConfirmedAmount, 2) . ' DZD) does not match required amount (' . number_format($totalAmount, 2) . ' DZD). Payment must be complete.']);
+        }
+
         $wallet = AgencyWallet::firstOrCreate(
             ['agency_id' => $gestionnaire->agency_id],
             ['balance' => 0]
@@ -121,6 +141,20 @@ class WalletController extends Controller
         // Check if funds already released
         if ($pv->funds_released_at !== null) {
             return redirect()->back()->withErrors(['pv' => 'Funds have already been released for this PV.']);
+        }
+
+        // Verify that payment amount equals total amount exactly (must pay exactly)
+        $pvTotalAmount = $pv->total_amount;
+        $receivedAmount = $pv->cash_received_amount ?? 0;
+        $difference = abs($receivedAmount - $pvTotalAmount);
+
+        if ($difference > 0.01) { // Allow small floating point differences
+            if ($receivedAmount < $pvTotalAmount) {
+                $remainingAmount = $pvTotalAmount - $receivedAmount;
+                return redirect()->back()->withErrors(['pv' => 'Cannot release funds: Payment is incomplete. Amount received (' . number_format($receivedAmount, 2) . ' DZD) is less than required amount (' . number_format($pvTotalAmount, 2) . ' DZD). Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD. Payment must be complete before releasing funds to artists.']);
+            } else {
+                return redirect()->back()->withErrors(['pv' => 'Cannot release funds: Payment amount (' . number_format($receivedAmount, 2) . ' DZD) exceeds required amount (' . number_format($pvTotalAmount, 2) . ' DZD). Payment must match exactly.']);
+            }
         }
 
         $wallet = AgencyWallet::firstOrCreate(

@@ -840,6 +840,31 @@ class AgentController extends Controller
                 ->withErrors(['pv' => 'This PV has already been finalized by the agency.']);
         }
 
+        // Check if payment is complete before allowing to close
+        if (!$pv->agent_payment_confirmed) {
+            return redirect()
+                ->back()
+                ->withErrors(['pv' => 'Cannot close PV: Payment has not been confirmed yet.']);
+        }
+
+        // Verify that payment amount equals total amount (must pay exactly)
+        $totalAmount = $pv->total_amount;
+        $receivedAmount = $pv->cash_received_amount ?? 0;
+        $difference = abs($receivedAmount - $totalAmount);
+
+        if ($difference > 0.01) { // Allow small floating point differences
+            $remainingAmount = $totalAmount - $receivedAmount;
+            if ($remainingAmount > 0) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['pv' => 'Cannot close PV: Payment is incomplete. Amount received: ' . number_format($receivedAmount, 2) . ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD. Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD.']);
+            } else {
+                return redirect()
+                    ->back()
+                    ->withErrors(['pv' => 'Cannot close PV: Payment amount exceeds required amount. Amount received: ' . number_format($receivedAmount, 2) . ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD.']);
+            }
+        }
+
         $request->validate([
             'notes' => 'nullable|string',
         ]);
@@ -880,14 +905,39 @@ class AgentController extends Controller
 
         $data = $request->validate([
             'payment_method' => 'required|in:CASH,CHEQUE',
-            'cash_received_amount' => 'nullable|numeric|min:0',
+            'cash_received_amount' => 'required|numeric|min:0',
             'agent_payment_confirmed' => 'nullable|boolean',
         ]);
 
         $pv->payment_method = $data['payment_method'];
+        $pv->cash_received_amount = $data['cash_received_amount'];
+        
+        // Validate payment amount
+        $totalAmount = $pv->total_amount;
+        $receivedAmount = $data['cash_received_amount'];
+        $difference = $receivedAmount - $totalAmount;
         
         // Agent confirms payment received from client
         if (isset($data['agent_payment_confirmed']) && $data['agent_payment_confirmed']) {
+            // Payment must be exactly equal to total amount (allow small floating point differences)
+            if (abs($difference) > 0.01) {
+                if ($difference > 0) {
+                    // Payment is more than required
+                    return redirect()
+                        ->back()
+                        ->withErrors(['cash_received_amount' => 'Cannot complete operation: Amount paid (' . number_format($receivedAmount, 2) . ' DZD) exceeds required amount (' . number_format($totalAmount, 2) . ' DZD). Excess: ' . number_format($difference, 2) . ' DZD.'])
+                        ->withInput();
+                } else {
+                    // Payment is less than required
+                    $remainingAmount = abs($difference);
+                    return redirect()
+                        ->back()
+                        ->withErrors(['cash_received_amount' => 'Cannot confirm payment: Amount paid (' . number_format($receivedAmount, 2) . ' DZD) is less than required amount (' . number_format($totalAmount, 2) . ' DZD). Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD. Please collect the full amount before confirming.'])
+                        ->withInput();
+                }
+            }
+            
+            // Payment amount matches exactly (or very close)
             $pv->agent_payment_confirmed = true;
             $pv->agent_confirmed_at = now();
             
@@ -910,10 +960,6 @@ class AgentController extends Controller
                     ]
                 );
             }
-        }
-        
-        if (isset($data['cash_received_amount'])) {
-            $pv->cash_received_amount = $data['cash_received_amount'];
         }
         
         $pv->save();

@@ -462,6 +462,20 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.show-agency', $agency->id)->with('success', 'Admin removed successfully');
     }
 
+    public function updateAgencyBankAccount(Request $request, $id)
+    {
+        $agency = Agency::findOrFail($id);
+        
+        $request->validate([
+            'bank_account_number' => 'nullable|string|max:255',
+        ]);
+
+        $agency->bank_account_number = $request->bank_account_number;
+        $agency->save();
+
+        return redirect()->route('superadmin.show-agency', $agency->id)->with('success', 'Bank account number updated successfully');
+    }
+
     public function createAgencyGestionnaire($id)
     {
         $agency = Agency::findOrFail($id);

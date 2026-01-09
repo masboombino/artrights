@@ -12,6 +12,28 @@
             </a>
         </div>
 
+        <!-- Filters -->
+        <div class="stat-card" style="padding: 1rem; margin-bottom: 10px;">
+            <form method="GET" action="{{ route('gestionnaire.missions.index') }}" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <label style="color: #193948; font-weight: 600; font-size: 0.9rem;">Filter by Status:</label>
+                <select name="status" style="padding: 8px 16px; border: 2px solid #193948; color: #193948; background-color: white; font-size: 0.9rem; border-radius: 0.5rem;">
+                    <option value="">All Status</option>
+                    <option value="ASSIGNED" {{ request('status') === 'ASSIGNED' ? 'selected' : '' }}>Assigned</option>
+                    <option value="IN_PROGRESS" {{ request('status') === 'IN_PROGRESS' ? 'selected' : '' }}>In Progress</option>
+                    <option value="DONE" {{ request('status') === 'DONE' ? 'selected' : '' }}>Done</option>
+                    <option value="CANCELLED" {{ request('status') === 'CANCELLED' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+                <button type="submit" class="primary-button" style="padding: 8px 20px; font-size: 0.9rem;">
+                    Apply Filter
+                </button>
+                @if(request('status'))
+                    <a href="{{ route('gestionnaire.missions.index') }}" class="secondary-button" style="padding: 8px 20px; font-size: 0.9rem; text-decoration: none;">
+                        Clear
+                    </a>
+                @endif
+            </form>
+        </div>
+
         <div class="page-container" style="overflow-x: auto;">
             <table class="data-table">
                 <thead>

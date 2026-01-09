@@ -311,6 +311,12 @@ if ($artwork->file_path) {
                     <strong>{{ number_format($artwork->platform_tax_amount, 2) }} DZD</strong> 
                     to activate it and make it available for use in PVs.
                 </p>
+                @if($artwork->artist && $artwork->artist->agency && $artwork->artist->agency->bank_account_number)
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #dbeafe; border: 2px solid #3b82f6; border-radius: 0.5rem;">
+                        <p class="text-sm font-semibold mb-1" style="color: #193948;">🏦 Agency Bank Account Number:</p>
+                        <p class="text-lg font-bold" style="color: #1e40af;">{{ $artwork->artist->agency->bank_account_number }}</p>
+                    </div>
+                @endif
                 <p style="color: #193948; font-size: 0.95rem; margin-bottom: 1rem;">
                     Current Wallet Balance: <strong>{{ number_format($wallet->balance, 2) }} DZD</strong>
                 </p>
