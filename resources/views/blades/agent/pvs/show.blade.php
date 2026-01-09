@@ -59,7 +59,7 @@
                                 </button>
                             </form>
                         @else
-                            <button type="button" disabled class="inline-flex items-center gap-2 rounded-lg shadow transition px-4 py-2 font-semibold text-sm opacity-50 cursor-not-allowed" style="background-color: #9ca3af; color: white;" title="Cannot close PV: Payment must be confirmed and amount must match total.">
+                            <button type="button" onclick="showToast('Cannot close PV: Payment must be confirmed and amount must match total.', 'error')" class="inline-flex items-center gap-2 rounded-lg shadow transition hover:opacity-90 px-4 py-2 font-semibold text-sm opacity-60 cursor-not-allowed" style="background-color: #9ca3af; color: white;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
@@ -75,7 +75,7 @@
                                 Edit PV
                             </a>
                         @else
-                            <button type="button" disabled class="inline-flex items-center gap-2 rounded-lg shadow transition px-4 py-2 font-semibold text-sm opacity-50 cursor-not-allowed" style="background-color: #9ca3af; color: white;" title="Cannot edit PV: PV must be in OPEN status.">
+                            <button type="button" onclick="showToast('Cannot edit PV: PV must be in OPEN status.', 'error')" class="inline-flex items-center gap-2 rounded-lg shadow transition hover:opacity-90 px-4 py-2 font-semibold text-sm opacity-60 cursor-not-allowed" style="background-color: #9ca3af; color: white;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -290,5 +290,80 @@
             @endif
         </div>
     </div>
+
+    <script>
+        function showToast(message, type = 'info') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background-color: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
+                font-weight: 500;
+                max-width: 400px;
+                animation: slideIn 0.3s ease-out;
+            `;
+            toast.textContent = message;
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            if (!document.querySelector('style[data-toast-style]')) {
+                style.setAttribute('data-toast-style', '');
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(toast);
+            
+            // Remove toast after 4 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeForm = document.getElementById('closePvForm');
+            if (closeForm) {
+                closeForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to close this PV? This action cannot be undone.')) {
+                        this.submit();
+                    }
+                });
+            }
+        });
+    </script>
 </x-allthepages-layout>
 
