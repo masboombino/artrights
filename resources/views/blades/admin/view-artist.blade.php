@@ -61,6 +61,58 @@
                     </div>
                 </div>
 
+                <!-- Bank Account Information -->
+                @if($artist->bank_account_number)
+                <div class="mb-6 pt-4 border-t-2" style="border-color: rgba(255, 227, 227, 0.2);">
+                    <h3 class="text-xl font-bold mb-3" style="color: #193948;">Bank Account Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1" style="color: #193948;">Bank/Postal Account Number</label>
+                            <p class="text-base p-2 rounded" style="background-color: #ffffff; color: #36454f; border: 2px solid #193948; border-radius: 8px; font-family: monospace;">{{ $artist->bank_account_number }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1" style="color: #193948;">Full Name on Account</label>
+                            <p class="text-base p-2 rounded" style="background-color: #ffffff; color: #36454f; border: 2px solid #193948; border-radius: 8px;">{{ $artist->full_name_on_account ?? 'N/A' }}</p>
+                        </div>
+                        @if($artist->bank_account_proof)
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold mb-1" style="color: #193948;">Bank Account Proof</label>
+                            @php
+                                $fileExtension = strtolower(pathinfo($artist->bank_account_proof, PATHINFO_EXTENSION));
+                                $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']);
+                                $normalizedPath = ltrim($artist->bank_account_proof, '/');
+                                $imageUrl = route('media.show', ['path' => $normalizedPath]);
+                                $downloadUrl = route('media.show', ['path' => $normalizedPath]);
+                            @endphp
+                            @if($isImage)
+                                <button type="button" class="identity-image-thumb" onclick="openIdentityLightbox('{{ $imageUrl }}', 'bank-proof-{{ $artist->id }}')">
+                                    <img src="{{ $imageUrl }}" alt="Bank Account Proof">
+                                </button>
+
+                                <div id="bank-proof-{{ $artist->id }}" class="identity-lightbox">
+                                    <button type="button" class="lightbox-close-btn" onclick="closeIdentityLightbox('bank-proof-{{ $artist->id }}')">&times;</button>
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-left" onclick="rotateIdentityImage('bank-proof-{{ $artist->id }}', -90)">↺</button>
+                                    <img id="lightbox-img-bank-proof-{{ $artist->id }}" src="" alt="Bank Account Proof Preview" style="transform: rotate(0deg);">
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-right" onclick="rotateIdentityImage('bank-proof-{{ $artist->id }}', 90)">↻</button>
+                                </div>
+                            @else
+                                <div class="p-4 rounded-lg" style="background-color: #ffffff; border: 2px solid #193948; border-radius: 12px;">
+                                    <p class="text-base font-semibold mb-2" style="color: #193948;">PDF Document</p>
+                                    <a href="{{ $downloadUrl }}" target="_blank" class="inline-block rounded-lg shadow-lg transition hover:opacity-90" style="background-color: #D6BFBF; color: #193948; padding: 0.75rem 1.5rem; font-weight: 600;">
+                                        View PDF Document
+                                    </a>
+                                </div>
+                            @endif
+                            
+                            <a href="{{ $downloadUrl }}?download=1" download class="inline-block mt-2 rounded-lg shadow-lg transition hover:opacity-90" style="background-color: #193948; color: #4FADC0; padding: 0.75rem 1.5rem; font-weight: 600;">
+                                Download Proof
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
                 <!-- Account Status -->
                 <div class="mb-6 pt-4 border-t-2" style="border-color: rgba(255, 227, 227, 0.2);">
                     <h3 class="text-xl font-bold mb-3" style="color: #193948;">Account Status</h3>
@@ -217,49 +269,66 @@
                                     }
                                 </style>
                                 
-                                <button type="button" class="identity-image-thumb" onclick="openIdentityLightbox('{{ $imageUrl }}')">
+                                <button type="button" class="identity-image-thumb" onclick="openIdentityLightbox('{{ $imageUrl }}', 'identity-lightbox-{{ $artist->id }}')">
                                     <img src="{{ $imageUrl }}" alt="Identity Document">
                                 </button>
 
                                 <div id="identity-lightbox-{{ $artist->id }}" class="identity-lightbox">
-                                    <button type="button" class="lightbox-close-btn" onclick="closeIdentityLightbox('{{ $artist->id }}')">&times;</button>
-                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-left" onclick="rotateIdentityImage('{{ $artist->id }}', -90)">↺</button>
+                                    <button type="button" class="lightbox-close-btn" onclick="closeIdentityLightbox('identity-lightbox-{{ $artist->id }}')">&times;</button>
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-left" onclick="rotateIdentityImage('identity-lightbox-img-{{ $artist->id }}', -90)">↺</button>
                                     <img id="identity-lightbox-img-{{ $artist->id }}" src="" alt="Identity Document Preview" style="transform: rotate(0deg);">
-                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-right" onclick="rotateIdentityImage('{{ $artist->id }}', 90)">↻</button>
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-right" onclick="rotateIdentityImage('identity-lightbox-img-{{ $artist->id }}', 90)">↻</button>
                                 </div>
 
                                 <script>
                                     window.identityRotation = window.identityRotation || {};
 
-                                    function openIdentityLightbox(imageUrl) {
-                                        const lightboxId = 'identity-lightbox-{{ $artist->id }}';
+                                    function openIdentityLightbox(imageUrl, lightboxId) {
+                                        // If lightboxId is not provided, try to guess the old default (compatibility)
+                                        if (!lightboxId) {
+                                            lightboxId = 'identity-lightbox-{{ $artist->id }}';
+                                        }
+                                        
                                         const lightbox = document.getElementById(lightboxId);
-                                        const img = document.getElementById('identity-lightbox-img-{{ $artist->id }}');
+                                        // Try to find the image inside the lightbox
+                                        const img = lightbox ? lightbox.querySelector('img') : null;
                                         
                                         if (lightbox && img) {
                                             img.src = imageUrl;
                                             img.style.transform = 'rotate(0deg)';
-                                            window.identityRotation['{{ $artist->id }}'] = 0;
+                                            window.identityRotation[img.id] = 0;
                                             lightbox.style.display = 'flex';
                                         }
                                     }
 
-                                    function closeIdentityLightbox(artistId) {
-                                        const lightbox = document.getElementById('identity-lightbox-' + artistId);
+                                    function closeIdentityLightbox(lightboxId) {
+                                        // Compatibility wrapper
+                                        if (lightboxId && !lightboxId.startsWith('identity-lightbox') && !lightboxId.startsWith('bank-proof')) {
+                                            // Assume it's just the ID part passed by old calls
+                                            lightboxId = 'identity-lightbox-' + lightboxId;
+                                        }
+
+                                        const lightbox = document.getElementById(lightboxId);
                                         if (lightbox) {
                                             lightbox.style.display = 'none';
                                         }
                                     }
 
-                                    function rotateIdentityImage(artistId, degrees) {
-                                        if (!window.identityRotation[artistId]) {
-                                            window.identityRotation[artistId] = 0;
+                                    function rotateIdentityImage(imageId, degrees) {
+                                        // Compatibility wrapper
+                                        if (imageId && !imageId.startsWith('identity-lightbox-img') && !imageId.startsWith('lightbox-img-bank-proof')) {
+                                            // Assume it's just the artist ID passed by old calls
+                                            imageId = 'identity-lightbox-img-' + imageId;
                                         }
-                                        window.identityRotation[artistId] += degrees;
+
+                                        if (!window.identityRotation[imageId]) {
+                                            window.identityRotation[imageId] = 0;
+                                        }
+                                        window.identityRotation[imageId] += degrees;
                                         
-                                        const img = document.getElementById('identity-lightbox-img-' + artistId);
+                                        const img = document.getElementById(imageId);
                                         if (img) {
-                                            img.style.transform = 'rotate(' + window.identityRotation[artistId] + 'deg)';
+                                            img.style.transform = 'rotate(' + window.identityRotation[imageId] + 'deg)';
                                         }
                                     }
 

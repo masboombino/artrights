@@ -6,6 +6,13 @@
             </div>
         @endif
 
+        <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="text-2xl font-bold" style="color: #193948;">Agencies ({{ $agencies->count() }} / 70 Wilayas)</h2>
+            <a href="{{ route('superadmin.create-agency') }}" class="rounded transition hover:opacity-90" style="background-color: #193948; color: #4FADC0; padding: 0.75rem 1.5rem; text-decoration: none;">
+                + Create New Agency
+            </a>
+        </div>
+
         <div class="page-container">
             <div style="overflow-x: auto; width: 100%;">
                 <table class="data-table" style="min-width: 800px;">
@@ -13,6 +20,7 @@
                         <tr>
                             <th>Wilaya</th>
                             <th>Agency Name</th>
+                            <th>Bank Account Number</th>
                             <th>Admin</th>
                             <th>Gestionnaires</th>
                             <th>Agents</th>
@@ -26,6 +34,7 @@
                             <tr>
                                 <td>{{ $agency->wilaya }}</td>
                                 <td>{{ $agency->agency_name }}</td>
+                                <td style="font-family: monospace;">{{ $agency->bank_account_number ?? 'N/A' }}</td>
                                 <td>{{ $agency->admin->name ?? 'Not assigned' }}</td>
                                 <td>{{ $agency->gestionnaires()->count() }}</td>
                                 <td>{{ $agency->agents()->count() }}</td>
@@ -39,7 +48,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8">No agencies found</td>
+                                <td colspan="9">No agencies found</td>
                             </tr>
                         @endforelse
                     </tbody>

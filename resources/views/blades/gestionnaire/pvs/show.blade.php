@@ -87,6 +87,18 @@
                         <p class="text-sm font-semibold">✅ Agent confirmed payment</p>
                         <p class="text-xs">Method: {{ $pv->payment_method }} | Confirmed: {{ $pv->agent_confirmed_at?->format('d/m/Y H:i') }}</p>
                     </div>
+
+                    @if($pv->payment_proof_path)
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold mb-2" style="color: #193948;">Payment Proof:</p>
+                            @include('blades.partials.complaint-gallery', [
+                                'galleryId' => 'payment-proof-'.$pv->id,
+                                'images' => [$pv->payment_proof_path],
+                                'useStorageRoute' => true,
+                            ])
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('gestionnaire.wallet.confirm-payment', $pv->id) }}" class="space-y-4">
                         @csrf
                         <div>

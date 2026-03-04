@@ -102,13 +102,16 @@ class WalletRechargeController extends Controller
             $wallet->save();
 
             // Create transaction record
+            $agency = $rechargeRequest->artist->agency;
+            $agencyBankAccount = $agency && $agency->bank_account_number ? $agency->bank_account_number : 'N/A';
+            
             Transaction::create([
                 'artist_id' => $rechargeRequest->artist_id,
                 'type' => 'WALLET_RECHARGE',
                 'amount' => $rechargeRequest->amount,
                 'payment_method' => 'WALLET_RECHARGE',
                 'payment_status' => 'VALIDATED',
-                'description' => 'Wallet recharge request #' . $rechargeRequest->id . ' approved - ' . $rechargeRequest->payment_method,
+                'description' => 'Wallet recharge request #' . $rechargeRequest->id . ' approved - ' . $rechargeRequest->payment_method . ' - From agency account: ' . $agencyBankAccount,
             ]);
         });
 

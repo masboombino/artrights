@@ -16,6 +16,15 @@
             <h2 style="color: #193948; font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem;">Wallet Balance</h2>
             <p style="color: #193948; font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem;">{{ number_format($wallet->balance, 2) }} DZD</p>
             
+            @if(auth()->user()->artist && auth()->user()->artist->agency && auth()->user()->artist->agency->bank_account_number)
+            <div style="background-color: rgba(214, 191, 191, 0.1); border: 2px solid #193948; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: #193948; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">Agency Bank Account Number</h3>
+                <p style="color: #193948; font-size: 1.5rem; font-weight: 700; font-family: monospace; margin-bottom: 0.5rem;">{{ auth()->user()->artist->agency->bank_account_number }}</p>
+                <p style="color: #193948; font-size: 0.9rem; margin-bottom: 0.5rem;">Agency: {{ auth()->user()->artist->agency->agency_name }} - {{ auth()->user()->artist->agency->wilaya }}</p>
+                <p style="color: #193948; font-size: 0.85rem; font-style: italic;">Please use this bank account number when making payments for wallet recharge</p>
+            </div>
+            @endif
+            
             <div style="margin-top: 2rem;">
                 <h3 style="color: #193948; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Recharge Wallet</h3>
                 <p style="color: #193948; font-size: 0.95rem; margin-bottom: 1rem;">Please choose a payment method and upload proof of payment. Your request will be reviewed by an administrator.</p>

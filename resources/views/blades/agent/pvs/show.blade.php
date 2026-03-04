@@ -28,6 +28,12 @@
                     <h1 class="text-2xl font-bold mb-2" style="color: #193948;">{{ $pv->shop_name }}</h1>
                     <p class="mb-1" style="color: #36454f;">{{ $pv->shop_type }} — {{ $pv->date_of_inspection?->format('d/m/Y H:i') }}</p>
                     <p class="mb-1" style="color: #36454f;">Agency: {{ $pv->agency->agency_name ?? 'N/A' }}</p>
+                    @if($pv->agency && $pv->agency->bank_account_number)
+                        <p class="mt-2 text-sm" style="color: #193948;">
+                            <strong>🏦 Bank Account Number:</strong> <span style="font-weight: 700; color: #1e40af; font-family: monospace;">{{ $pv->agency->bank_account_number }}</span>
+                        </p>
+                        <p class="text-xs" style="color: #36454f; font-style: italic;">Use this account number when instructing the shop owner to make payment</p>
+                    @endif
                     @if($pv->mission)
                         <p style="color: #36454f;">Mission:
                             <span class="font-semibold">{{ $pv->mission->title }}</span>

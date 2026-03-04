@@ -173,7 +173,7 @@ class AgentController extends Controller
         }
         $user->save();
 
-        $agent->badge_number = $request->badge_number ?? $agent->badge_number;
+        // Badge number is readonly for agents, so we don't update it
         $agent->save();
 
         // Refresh user to get updated profile_photo_path
@@ -1480,57 +1480,7 @@ class AgentController extends Controller
         return round($categoryCoefficient * $deviceCoefficient * max($hours, 0.5) * $baseRate, 2);
     }
 
-    // Law Content
-    public function getLaw()
-    {
-        try {
-            $baseRate = config('artrights.base_rate', 200);
 
-            $englishLaw = Law::where('language', 'english')->first();
-            $arabicLaw = Law::where('language', 'arabic')->first();
-            $frenchLaw = Law::where('language', 'french')->first();
-
-            $sections = [];
-
-            if ($englishLaw) {
-                $sections['english'] = [
-                    'title' => $englishLaw->title ?? '',
-                    'notice' => $englishLaw->notice ?? '',
-                    'sections' => $englishLaw->sections ?? [],
-                ];
-            }
-
-            if ($arabicLaw) {
-                $sections['arabic'] = [
-                    'title' => $arabicLaw->title ?? '',
-                    'notice' => $arabicLaw->notice ?? '',
-                    'sections' => $arabicLaw->sections ?? [],
-                ];
-            }
-
-            if ($frenchLaw) {
-                $sections['french'] = [
-                    'title' => $frenchLaw->title ?? '',
-                    'notice' => $frenchLaw->notice ?? '',
-                    'sections' => $frenchLaw->sections ?? [],
-                ];
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'base_rate' => $baseRate,
-                    'sections' => $sections,
-                ]
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching law content: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to load law content: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
 
     /**
      * Get list of admins or gestionnaires in the same agency

@@ -20,6 +20,9 @@ class Artist extends Model
         'birth_place',
         'identity_document',
         'status',
+        'bank_account_number',
+        'bank_account_proof',
+        'full_name_on_account',
     ];
 
     public function user()

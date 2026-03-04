@@ -16,7 +16,7 @@
             }
         @endphp
 
-        <!-- Statistics and Submit Button -->
+        <!-- Statistics -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <div class="stat-card" style="padding: 1.5rem; text-align: center; min-width: 120px;">
@@ -32,11 +32,6 @@
                     <div style="color: #193948; font-size: 0.85rem;">Pending</div>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="{{ route('superadmin.complaints.create', ['type' => 'complaint']) }}" class="primary-button" style="background-color: #E76268; color: white; padding: 0.75rem 1.5rem; text-decoration: none;">
-                    ⚠️ Submit Complaint
-                </a>
-            </div>
         </div>
 
         <!-- Navigation Tabs -->
@@ -48,6 +43,10 @@
             <a href="{{ route('superadmin.complaints.index', ['type' => 'complaint']) }}" 
                style="padding: 12px 24px; font-weight: 600; color: #193948; text-decoration: none; border-bottom: 3px solid {{ request('type') === 'complaint' ? '#E76268' : 'transparent' }};">
                 ⚠️ Complaints
+            </a>
+            <a href="{{ route('superadmin.reports.index', ['type' => 'report']) }}" 
+               style="padding: 12px 24px; font-weight: 600; color: #193948; text-decoration: none; border-bottom: 3px solid {{ request('type') === 'report' ? '#10b981' : 'transparent' }};">
+                📊 Reports
             </a>
         </div>
 
@@ -94,8 +93,8 @@
                             @foreach($items as $item)
                                 <tr style="border-bottom: 1px solid rgba(25, 57, 72, 0.1); background-color: {{ $loop->even ? '#F9F9F9' : '#FFFFFF' }}; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#F3EBDD'" onmouseout="this.style.backgroundColor='{{ $loop->even ? '#F9F9F9' : '#FFFFFF' }}'">
                                     <td style="padding: 1.25rem 1rem; text-align: center; border-right: 1px solid rgba(25, 57, 72, 0.1);">
-                                        <span style="padding: 8px 16px; font-size: 0.8rem; font-weight: 700; background-color: #E76268; color: white; display: inline-block; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                            ⚠️ Complaint
+                                        <span style="padding: 8px 16px; font-size: 0.8rem; font-weight: 700; background-color: {{ $item->type === 'COMPLAINT' ? '#E76268' : '#10b981' }}; color: white; display: inline-block; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                            {{ $item->type === 'COMPLAINT' ? '⚠️ Complaint' : '📊 Report' }}
                                         </span>
                                     </td>
                                     <td style="padding: 1.25rem 1rem; text-align: center; color: #193948; font-weight: 600; font-size: 0.9rem; border-right: 1px solid rgba(25, 57, 72, 0.1);">

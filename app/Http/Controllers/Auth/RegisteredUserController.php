@@ -69,6 +69,9 @@ class RegisteredUserController extends Controller
             'address' => ['required', 'string', 'max:255'],
             'agency_id' => ['required', 'exists:agencies,id'],
             'identity_document' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'bank_account_number' => ['required', 'string', 'max:255'],
+            'full_name_on_account' => ['required', 'string', 'max:255'],
+            'bank_account_proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
             'password' => [
                 'required', 
                 'confirmed', 
@@ -111,6 +114,14 @@ class RegisteredUserController extends Controller
             'last_name.regex' => 'The last name must contain only Latin letters (a-z, A-Z) and spaces.',
         ]);
 
+        // Check if agency has an admin
+        $agency = Agency::find($request->agency_id);
+        if (!$agency || !$agency->admin_id) {
+            return redirect()->back()
+                ->withErrors(['agency_id' => 'Registration is currently unavailable for this agency as it does not have an assigned administrator. Please try again in a week or contact support.'])
+                ->withInput();
+        }
+
         $user = User::create([
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
@@ -125,6 +136,12 @@ class RegisteredUserController extends Controller
             $identityDocumentPath = $request->file('identity_document')->store('identity_documents', 'public');
         }
 
+        // Handle bank account proof file upload
+        $bankAccountProofPath = null;
+        if ($request->hasFile('bank_account_proof')) {
+            $bankAccountProofPath = $request->file('bank_account_proof')->store('bank_account_proofs', 'public');
+        }
+
         // Create Artist with PENDING_VALIDATION status
         $artist = Artist::create([
             'user_id' => $user->id,
@@ -134,6 +151,9 @@ class RegisteredUserController extends Controller
             'birth_place' => $request->birth_place,
             'address' => $request->address,
             'identity_document' => $identityDocumentPath,
+            'bank_account_number' => $request->bank_account_number,
+            'full_name_on_account' => $request->full_name_on_account,
+            'bank_account_proof' => $bankAccountProofPath,
             'status' => 'PENDING_VALIDATION',
         ]);
 

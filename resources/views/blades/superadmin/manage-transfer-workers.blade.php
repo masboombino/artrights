@@ -24,6 +24,46 @@
         <div class="page-container">
             <h2 style="color: #193948; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">Transfer Workers Between Agencies</h2>
             
+            <!-- Quick Transfer by Email -->
+            <div style="background-color: #D6BFBF; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 2px solid #193948;">
+                <h3 style="color: #193948; font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">🔍 Quick Transfer by Email</h3>
+                <p style="color: #193948; margin-bottom: 1rem; font-size: 0.95rem;">
+                    Enter the user's email to transfer them directly. If transferring an admin to an agency that already has an admin, they will be automatically swapped.
+                </p>
+                <form action="{{ route('superadmin.transfer-user-by-email') }}" method="POST" id="emailTransferForm">
+                    @csrf
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+                        <div>
+                            <label style="display: block; color: #193948; font-weight: 600; margin-bottom: 5px;">User Email:</label>
+                            <input type="email" name="email" required placeholder="user@example.com"
+                                   style="width: 100%; padding: 0.5rem; border: 2px solid #193948; border-radius: 0.5rem;">
+                        </div>
+                        <div>
+                            <label style="display: block; color: #193948; font-weight: 600; margin-bottom: 5px;">Target Agency:</label>
+                            <select name="new_agency_id" required class="form-input" style="width: 100%; padding: 0.5rem; border: 2px solid #193948; border-radius: 0.5rem;">
+                                <option value="">Select Agency</option>
+                                @foreach($agencies as $agency)
+                                    <option value="{{ $agency->id }}">
+                                        {{ $agency->agency_name }} - {{ $agency->wilaya }}
+                                        @if($agency->admin_id)
+                                            (Has Admin)
+                                        @else
+                                            (No Admin)
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-block rounded-lg shadow-lg transition hover:opacity-90"
+                                    style="background-color: #E76268; color: white; padding: 0.75rem 2rem; font-weight: 600; border: none; cursor: pointer;">
+                                Transfer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
             <!-- Filter Form -->
             <div style="background-color: #F3EBDD; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 2px solid #193948;">
                 <form method="GET" action="{{ route('superadmin.manage-transfer-workers') }}" id="filterForm">

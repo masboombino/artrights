@@ -29,7 +29,10 @@ class UsersSeeder extends Seeder
             'Souk Ahras' => '41', 'Tipaza' => '42', 'Mila' => '43', 'Ain Defla' => '44', 'Naama' => '45',
             'Ain Temouchent' => '46', 'Ghardaia' => '47', 'Relizane' => '48', 'El M\'Ghair' => '57', 'El Menia' => '58',
             'Ouled Djellal' => '51', 'Bordj Badji Mokhtar' => '50', 'Beni Abbes' => '52', 'In Salah' => '53',
-            'In Guezzam' => '54', 'Touggourt' => '55', 'Djanet' => '56'
+            'In Guezzam' => '54', 'Touggourt' => '55', 'Djanet' => '56',
+            'El Hegueir' => '59', 'Sebdou' => '60', 'Beni Saf' => '61', 'Telerghma' => '62', 'Azzaba' => '63',
+            'Djemila' => '64', 'El Eulma' => '65', 'Barika' => '66', 'Menaa' => '67', 'Ksar El Hirane' => '68',
+            'Sidi Khaled' => '69', 'Sidi Aissa' => '70'
         ];
 
         return $wilayaNumbers[$wilayaName] ?? str_pad($wilayaName, 2, '0', STR_PAD_LEFT);

@@ -819,7 +819,7 @@
                     <div class="feature-icon">🏛️</div>
                     <h3 class="feature-title">Nationwide Agency Network</h3>
                     <p class="feature-description">
-                        Comprehensive coverage through 58 provincial agencies across Algeria. Local support and management in every region.
+                        Comprehensive coverage through 70 provincial agencies across Algeria. Local support and management in every region.
                     </p>
                 </div>
                 <div class="feature-card">
@@ -870,8 +870,8 @@
                         We provide a system that bridges the gap between artists and legal protection.
                     </p>
                     <p>
-                        Our mission is to ensure that every creative work is properly registered, legally protected, and that artists receive 
-                        fair compensation for the use of their intellectual property. Through our network of 58 provincial agencies, we bring 
+                        Our mission is to ensure that every creative work is properly registered, legally protected, and that artists receive
+                        fair compensation for the use of their intellectual property. Through our network of 70 provincial agencies, we bring
                         protection services directly to artists in every region.
                     </p>
                     <p>

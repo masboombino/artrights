@@ -91,6 +91,8 @@ class ArtistController extends Controller
                         'birth_date' => $artist->birth_date,
                         'birth_place' => $artist->birth_place,
                         'status' => $artist->status,
+                        'bank_account_number' => $artist->bank_account_number,
+                        'full_name_on_account' => $artist->full_name_on_account,
                         'agency_name' => $artist->agency ? $artist->agency->agency_name : 'Not Assigned',
                         'wilaya' => $artist->agency ? $artist->agency->wilaya : 'Not Assigned',
                     ],
@@ -127,6 +129,9 @@ class ArtistController extends Controller
             'phone' => 'nullable|string|max:20',
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png',
+            'bank_account_number' => 'nullable|string|max:255',
+            'full_name_on_account' => 'nullable|string|max:255',
+            'bank_account_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         // Exact same update logic as web controller
@@ -135,6 +140,8 @@ class ArtistController extends Controller
             'address' => $request->address,
             'birth_place' => $request->birth_place,
             'birth_date' => $request->birth_date,
+            'bank_account_number' => $request->filled('bank_account_number') ? $request->bank_account_number : $artist->bank_account_number,
+            'full_name_on_account' => $request->filled('full_name_on_account') ? $request->full_name_on_account : $artist->full_name_on_account,
         ]);
 
         $user->name = $request->name;
@@ -183,6 +190,16 @@ class ArtistController extends Controller
                 ]);
             }
         }
+
+        // Handle bank account proof upload
+        if ($request->hasFile('bank_account_proof')) {
+            if ($artist->bank_account_proof) {
+                Storage::disk('public')->delete($artist->bank_account_proof);
+            }
+            $artist->bank_account_proof = $request->file('bank_account_proof')->store('bank_account_proofs', 'public');
+            $artist->save();
+        }
+
         $user->save();
 
         // Build profile photo URL - ensure it's always correct for API
@@ -231,6 +248,8 @@ class ArtistController extends Controller
                     'address' => $artist->address,
                     'birth_date' => $artist->birth_date,
                     'birth_place' => $artist->birth_place,
+                    'bank_account_number' => $artist->bank_account_number,
+                    'full_name_on_account' => $artist->full_name_on_account,
                     'agency_name' => $artist->agency ? $artist->agency->agency_name : 'Not Assigned',
                     'wilaya' => $artist->agency ? $artist->agency->wilaya : 'Not Assigned',
                 ],
@@ -241,30 +260,31 @@ class ArtistController extends Controller
     // Artworks Management
     public function getArtworks(Request $request)
     {
-        $artist = Auth::user()->artist;
+        try {
+            $user = Auth::user();
+            $artist = $user->artist;
 
-        if (!$artist) {
-            return response()->json([
-                'message' => 'Artist profile not found',
-            ], 404);
-        }
+            if (!$artist) {
+                return response()->json([
+                    'message' => 'Artist profile not found',
+                ], 404);
+            }
 
-        $query = Artwork::where('artist_id', $artist->id)
-            ->with('category')
-            ->orderBy('created_at', 'desc');
+            $query = Artwork::where('artist_id', $artist->id)
+                ->with('category')
+                ->orderBy('created_at', 'desc');
 
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
 
-        $artworks = $query->get();
+            $artworks = $query->get();
 
-        return response()->json([
-            'artworks' => $artworks->map(function ($artwork) {
+            $artworksData = $artworks->map(function ($artwork) {
                 // Return public storage path - directly accessible without auth for better performance
                 $filePath = $artwork->file_path ? '/storage/' . ltrim($artwork->file_path, '/') : null;
                 $fileName = $artwork->file_path ? basename($artwork->file_path) : null;
-                
+
                 return [
                     'id' => $artwork->id,
                     'title' => $artwork->title,
@@ -282,8 +302,18 @@ class ArtistController extends Controller
                     'created_at' => $artwork->created_at,
                     'updated_at' => $artwork->updated_at,
                 ];
-            }),
-        ]);
+            });
+
+            $response = [
+                'artworks' => $artworksData,
+            ];
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to load artworks: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getArtwork($id)
@@ -515,23 +545,30 @@ class ArtistController extends Controller
     // Wallet Management
     public function getWallet()
     {
-        $artist = Auth::user()->artist;
+        try {
+            $user = Auth::user();
+            $artist = $user->artist;
 
-        if (!$artist) {
+            if (!$artist) {
+                return response()->json([
+                    'message' => 'Artist profile not found',
+                ], 404);
+            }
+
+            $wallet = Wallet::firstOrCreate(['artist_id' => $artist->id], ['balance' => 0]);
+
             return response()->json([
-                'message' => 'Artist profile not found',
-            ], 404);
+                'wallet' => [
+                    'id' => $wallet->id,
+                    'balance' => $wallet->balance,
+                    'last_transaction' => $wallet->last_transaction,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to load wallet: ' . $e->getMessage(),
+            ], 500);
         }
-
-        $wallet = Wallet::firstOrCreate(['artist_id' => $artist->id], ['balance' => 0]);
-
-        return response()->json([
-            'wallet' => [
-                'id' => $wallet->id,
-                'balance' => $wallet->balance,
-                'last_transaction' => $wallet->last_transaction,
-            ],
-        ]);
     }
 
     public function getTransactions()
@@ -624,6 +661,14 @@ class ArtistController extends Controller
             return response()->json([
                 'message' => 'Artist profile not found',
             ], 404);
+        }
+
+        // Check if artist has bank account information
+        if (!$artist->bank_account_number || !$artist->full_name_on_account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must add your bank account information before recharging your wallet. Please update your profile with your bank account number and full name on account.',
+            ], 400);
         }
 
         $request->validate([
@@ -991,58 +1036,6 @@ class ArtistController extends Controller
         ]);
     }
 
-    // Law Content
-    public function getLaw()
-    {
-        try {
-            $baseRate = config('artrights.base_rate', 200);
-            
-            // Get laws from database
-            $englishLaw = Law::where('language', 'english')->first();
-            $arabicLaw = Law::where('language', 'arabic')->first();
-            $frenchLaw = Law::where('language', 'french')->first();
 
-            // Build response with database content or defaults
-            $sections = [];
-            
-            if ($englishLaw) {
-                $sections['english'] = [
-                    'title' => $englishLaw->title ?? '',
-                    'notice' => $englishLaw->notice ?? '',
-                    'sections' => $englishLaw->sections ?? [],
-                ];
-            }
-            
-            if ($arabicLaw) {
-                $sections['arabic'] = [
-                    'title' => $arabicLaw->title ?? '',
-                    'notice' => $arabicLaw->notice ?? '',
-                    'sections' => $arabicLaw->sections ?? [],
-                ];
-            }
-            
-            if ($frenchLaw) {
-                $sections['french'] = [
-                    'title' => $frenchLaw->title ?? '',
-                    'notice' => $frenchLaw->notice ?? '',
-                    'sections' => $frenchLaw->sections ?? [],
-                ];
-            }
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'base_rate' => $baseRate,
-                    'sections' => $sections,
-                ]
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching law content: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to load law content: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
 }
 

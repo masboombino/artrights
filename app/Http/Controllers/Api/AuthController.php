@@ -90,6 +90,9 @@ class AuthController extends Controller
             'address' => 'required|string|max:255',
             'agency_id' => 'required|exists:agencies,id',
             'identity_document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'bank_account_number' => 'required|string|max:255',
+            'full_name_on_account' => 'required|string|max:255',
+            'bank_account_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'password' => [
                 'required', 
                 'confirmed', 
@@ -141,6 +144,7 @@ class AuthController extends Controller
         ]);
 
         $identityPath = $request->file('identity_document')->store('identity_documents', 'public');
+        $bankAccountProofPath = $request->file('bank_account_proof')->store('bank_account_proofs', 'public');
 
         $artist = Artist::create([
             'user_id' => $user->id,
@@ -150,6 +154,9 @@ class AuthController extends Controller
             'birth_place' => $request->birth_place,
             'address' => $request->address,
             'identity_document' => $identityPath,
+            'bank_account_number' => $request->bank_account_number,
+            'full_name_on_account' => $request->full_name_on_account,
+            'bank_account_proof' => $bankAccountProofPath,
             'status' => 'PENDING_VALIDATION',
         ]);
 

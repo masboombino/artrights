@@ -46,6 +46,11 @@
         <div class="rounded-lg shadow overflow-hidden" style="background-color: #F3EBDD; margin-bottom: 2rem;">
             <div class="p-4 flex justify-between items-center" style="background-color: #193948;">
                 <h3 class="text-xl font-bold" style="color: #D6BFBF;">Agencies ({{ $agencies->count() }})</h3>
+                <a href="{{ route('superadmin.create-agency-for-wilaya', $wilayaCode) }}" 
+                   class="rounded text-sm transition hover:opacity-90" 
+                   style="background-color: #10b981; color: white; padding: 0.5rem 1rem; display: inline-block;">
+                    + Add New Agency
+                </a>
             </div>
             <div class="p-4">
                 @forelse($agencies as $agency)

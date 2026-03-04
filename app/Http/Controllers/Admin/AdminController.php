@@ -7,6 +7,7 @@ use App\Mail\User\AccountApprovedEmail;
 use App\Mail\User\AccountRejectedEmail;
 use App\Models\User;
 use App\Models\Agent;
+use App\Models\Agency;
 use App\Models\AgencyWallet;
 use App\Models\AgencyWalletTransaction;
 use App\Models\Artist;

@@ -91,8 +91,64 @@
                                 {{ $artist->agency ? $artist->agency->wilaya : 'Not Assigned' }}
                             </div>
                         </div>
+                        @if($artist->agency && $artist->agency->bank_account_number)
+                        <div style="grid-column: 1 / -1;">
+                            <label style="display: block; color: #193948; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">Bank Account Number</label>
+                            <div style="background-color: white; border: 1px solid #193948; border-radius: 5px; padding: 0.75rem; color: #193948; font-weight: 500; font-family: monospace;">
+                                {{ $artist->agency->bank_account_number }}
+                            </div>
+                            <p style="color: #193948; font-size: 0.75rem; margin-top: 0.5rem; font-style: italic;">Use this account number for wallet recharge payments</p>
+                        </div>
+                        @endif
                     </div>
                     <p style="color: #193948; font-size: 0.8rem; margin-top: 1rem; font-style: italic;">Agency information cannot be changed by the user</p>
+                </div>
+
+                <!-- Bank Account Information -->
+                <div style="background-color: rgba(214, 191, 191, 0.1); border: 2px solid #193948; border-radius: 10px; padding: 1.5rem; margin: 1rem 0;">
+                    <h3 style="color: #193948; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center;">
+                        💳 Bank Account Information
+                    </h3>
+                    <div style="margin: 5px; padding: 5px;">
+                        <label for="bank_account_number" class="form-label">Bank or Postal Account Number</label>
+                        <input type="text" name="bank_account_number" id="bank_account_number" value="{{ $artist->bank_account_number ?? '' }}" class="form-input" required>
+                        <p style="color: #193948; font-size: 0.75rem; margin-top: 0.5rem; font-style: italic;">This is the account number where payments will be sent</p>
+                        @error('bank_account_number')
+                            <p style="color: #E76268; font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div style="margin: 5px; padding: 5px;">
+                        <label for="full_name_on_account" class="form-label">Full Name on Account</label>
+                        <input type="text" name="full_name_on_account" id="full_name_on_account" value="{{ $artist->full_name_on_account ?? '' }}" class="form-input" required>
+                        <p style="color: #193948; font-size: 0.75rem; margin-top: 0.5rem; font-style: italic;">Enter the full name as it appears on your bank or postal account</p>
+                        @error('full_name_on_account')
+                            <p style="color: #E76268; font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div style="margin: 5px; padding: 5px;">
+                        <label for="bank_account_proof" class="form-label">Bank Account Proof (Check, Postal Order, or Document)</label>
+                        <input type="file" name="bank_account_proof" id="bank_account_proof" accept="image/*,.pdf" class="form-input">
+                        <p style="color: #193948; font-size: 0.75rem; margin-top: 0.5rem; font-style: italic;">Upload a check image, postal order, or document showing your account number. Accepted formats: JPG, PNG, PDF (Max: 5MB). Leave blank to keep current proof.</p>
+                        @if($artist->bank_account_proof)
+                            @php
+                                $fileExtension = strtolower(pathinfo($artist->bank_account_proof, PATHINFO_EXTENSION));
+                                $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']);
+                                $normalizedPath = ltrim($artist->bank_account_proof, '/');
+                                $imageUrl = route('media.show', ['path' => $normalizedPath]);
+                            @endphp
+                            <p style="color: #193948; font-size: 0.85rem; margin-top: 0.5rem;">
+                                Current proof: 
+                                @if($isImage)
+                                    <a href="{{ $imageUrl }}" target="_blank" style="color: #4FADC0; text-decoration: underline;">View Image</a>
+                                @else
+                                    <a href="{{ $imageUrl }}?download=1" download style="color: #4FADC0; text-decoration: underline;">Download PDF</a>
+                                @endif
+                            </p>
+                        @endif
+                        @error('bank_account_proof')
+                            <p style="color: #E76268; font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div style="margin: 5px; padding: 5px;">

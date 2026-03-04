@@ -10,14 +10,11 @@
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 2rem; padding: 1rem; background: linear-gradient(135deg, #F3EBDD 0%, #D6BFBF 100%); border-radius: 1rem; border: 2px solid #193948;">
             <div>
                 <h1 style="color: #193948; font-size: 2rem; font-weight: 700; margin: 0;">💬 Messages Center</h1>
-                <p style="color: #193948; font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Your Complaints & Reports</p>
+                <p style="color: #193948; font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Your Complaints</p>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <a href="{{ route('artist.messages.create', ['type' => 'complaint']) }}" style="padding: 12px 24px; background-color: #E76268; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
                     ⚠️ New Complaint
-                </a>
-                <a href="{{ route('artist.messages.create', ['type' => 'report']) }}" style="padding: 12px 24px; background-color: #10b981; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-                    📊 New Report
                 </a>
             </div>
         </div>
@@ -31,10 +28,6 @@
             <div class="page-container" style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #FEE2E2 0%, #FCA5A5 100%);">
                 <div style="font-size: 2rem; font-weight: 700; color: #E76268;">{{ $stats['complaints'] ?? 0 }}</div>
                 <div style="color: #193948; font-size: 0.85rem; margin-top: 0.5rem;">Complaints</div>
-            </div>
-            <div class="page-container" style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #D1FAE5 0%, #6EE7B7 100%);">
-                <div style="font-size: 2rem; font-weight: 700; color: #10b981;">{{ $stats['reports'] ?? 0 }}</div>
-                <div style="color: #193948; font-size: 0.85rem; margin-top: 0.5rem;">Reports</div>
             </div>
             <div class="page-container" style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);">
                 <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">{{ $stats['pending'] ?? 0 }}</div>
@@ -51,10 +44,6 @@
             <a href="{{ route('artist.messages.index', ['type' => 'complaint']) }}" 
                style="padding: 12px 24px; font-weight: 600; color: #193948; text-decoration: none; border-bottom: 3px solid {{ ($type ?? 'all') === 'complaint' ? '#E76268' : 'transparent' }};">
                 ⚠️ Complaints
-            </a>
-            <a href="{{ route('artist.messages.index', ['type' => 'report']) }}" 
-               style="padding: 12px 24px; font-weight: 600; color: #193948; text-decoration: none; border-bottom: 3px solid {{ ($type ?? 'all') === 'report' ? '#10b981' : 'transparent' }};">
-                📊 Reports
             </a>
             <a href="{{ route('artist.messages.inbox') }}" 
                style="padding: 12px 24px; font-weight: 600; color: #193948; text-decoration: none; border-bottom: 3px solid transparent;">
@@ -130,9 +119,6 @@
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <a href="{{ route('artist.messages.create', ['type' => 'complaint']) }}" style="padding: 12px 24px; background-color: #E76268; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
                         Submit Your First Complaint
-                    </a>
-                    <a href="{{ route('artist.messages.create', ['type' => 'report']) }}" style="padding: 12px 24px; background-color: #10b981; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-                        Submit Your First Report
                     </a>
                 </div>
             </div>

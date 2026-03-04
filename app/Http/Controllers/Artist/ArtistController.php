@@ -89,6 +89,9 @@ class ArtistController extends Controller
             'phone' => 'nullable|string|max:20',
             'password' => 'nullable|min:8|confirmed',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png',
+            'bank_account_number' => 'required|string|max:255',
+            'full_name_on_account' => 'required|string|max:255',
+            'bank_account_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $artist->update([
@@ -96,7 +99,17 @@ class ArtistController extends Controller
             'address' => $request->address,
             'birth_place' => $request->birth_place,
             'birth_date' => $request->birth_date,
+            'bank_account_number' => $request->bank_account_number,
+            'full_name_on_account' => $request->full_name_on_account,
         ]);
+
+        if ($request->hasFile('bank_account_proof')) {
+            if ($artist->bank_account_proof) {
+                Storage::disk('public')->delete($artist->bank_account_proof);
+            }
+            $artist->bank_account_proof = $request->file('bank_account_proof')->store('bank_account_proofs', 'public');
+            $artist->save();
+        }
 
         $user = $artist->user;
         $user->name = $request->name;
@@ -145,6 +158,12 @@ class ArtistController extends Controller
         
         if (!$artist) {
             return redirect()->route('login');
+        }
+
+        // Check if artist has bank account information
+        if (!$artist->bank_account_number || !$artist->full_name_on_account) {
+            return redirect()->route('artist.profile')
+                ->with('error', 'You must add your bank account information before recharging your wallet. Please update your profile with your bank account number and full name on account.');
         }
 
         $request->validate([
@@ -568,6 +587,14 @@ class ArtistController extends Controller
             return redirect()->back()->withErrors(['target_role' => 'You can only send complaints to admins in your own agency.'])->withInput();
         }
 
+        // Check if agency has an admin
+        $selectedAgency = \App\Models\Agency::find($data['agency_id']);
+        if ($data['target_role'] === 'admin' && (!$selectedAgency || !$selectedAgency->admin_id)) {
+            return redirect()->back()
+                ->withErrors(['target_role' => 'This agency currently has no admin assigned. Please try again later or contact support.'])
+                ->withInput();
+        }
+
         $images = [];
         if ($request->hasFile('images')) {
             $uploadedImages = $request->file('images');
@@ -650,10 +677,6 @@ class ArtistController extends Controller
         return view('blades.artist.artworks.show', compact('artwork', 'wallet'));
     }
 
-    public function viewLaw()
-    {
-        return view('blades.artist.law');
-    }
 
     public function payPlatformTax($id)
     {
@@ -681,6 +704,9 @@ class ArtistController extends Controller
         }
 
         \DB::transaction(function () use ($wallet, $artwork, $taxAmount, $artist) {
+            $agency = $artist->agency;
+            $agencyBankAccount = $agency && $agency->bank_account_number ? $agency->bank_account_number : 'N/A';
+            
             // Deduct from artist wallet
             $wallet->balance -= $taxAmount;
             $wallet->last_transaction = now();
@@ -703,7 +729,7 @@ class ArtistController extends Controller
                 'amount' => -$taxAmount,
                 'payment_method' => 'WALLET_RECHARGE',
                 'payment_status' => 'VALIDATED',
-                'description' => 'Platform tax payment for artwork: ' . $artwork->title,
+                'description' => 'Platform tax payment for artwork: ' . $artwork->title . ' - To agency account: ' . $agencyBankAccount,
             ]);
 
             // Record agency wallet transaction (incoming)
@@ -711,7 +737,7 @@ class ArtistController extends Controller
                 'agency_wallet_id' => $agencyWallet->id,
                 'direction' => 'IN',
                 'amount' => $taxAmount,
-                'description' => 'Platform tax payment from artist: ' . Auth::user()->name . ' for artwork: ' . $artwork->title,
+                'description' => 'Platform tax payment from artist: ' . Auth::user()->name . ' for artwork: ' . $artwork->title . ' - To agency account: ' . $agencyBankAccount,
             ]);
 
             $artwork->platform_tax_status = 'PAID';

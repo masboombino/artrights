@@ -168,6 +168,11 @@
                             <p class="text-base font-bold mb-1" style="color: #193948;">{{ $artist->user->name ?? 'N/A' }}</p>
                             <p class="text-sm mb-1" style="color: #193948;">{{ $artist->stage_name ?? 'N/A' }}</p>
                             <p class="text-sm mb-2" style="color: #193948;">{{ $artist->user->email ?? 'N/A' }}</p>
+                            @if($artist->bank_account_number)
+                                <p class="text-xs mb-1" style="color: #193948;">
+                                    <strong>Bank Account:</strong> <span style="font-family: monospace; color: #1e40af;">{{ $artist->bank_account_number }}</span>
+                                </p>
+                            @endif
                             <p class="text-sm font-semibold mb-1" style="color: #D6BFBF;">Status:</p>
                             <span class="px-3 py-1 rounded text-sm inline-block mb-3" style="background-color: #193948; color: #4FADC0;">
                                 {{ $artist->status }}

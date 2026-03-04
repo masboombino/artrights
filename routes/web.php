@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\WalletController as AdminWalletController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Agent\MissionController as AgentMissionController;
 use App\Http\Controllers\Artist\ArtistController;
@@ -9,6 +8,7 @@ use App\Http\Controllers\Gestionnaire\GestionnaireController;
 use App\Http\Controllers\Gestionnaire\MissionController as GestionnaireMissionController;
 use App\Http\Controllers\Gestionnaire\WalletController as GestionnaireWalletController;
 use App\Http\Controllers\Gestionnaire\WalletRechargeController;
+use App\Http\Controllers\LawController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
@@ -23,6 +23,8 @@ Route::get('/', function () {
 Route::get('/thanx', function () {
     return view('thanks');
 });
+
+Route::get('/law', [App\Http\Controllers\LawController::class, 'index'])->name('law.public');
 
 // Support and Help pages
 Route::get('/support', [SupportController::class, 'support'])->name('support');
@@ -83,8 +85,12 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
 
     Route::get('/wilayas', [SuperAdminController::class, 'allWilayas'])->name('all-wilayas');
     Route::get('/wilayas/{wilayaCode}', [SuperAdminController::class, 'showWilaya'])->name('show-wilaya');
+    Route::get('/wilayas/{wilayaCode}/create-agency', [SuperAdminController::class, 'createAgencyForWilaya'])->name('create-agency-for-wilaya');
+    Route::post('/wilayas/{wilayaCode}/store-agency', [SuperAdminController::class, 'storeAgencyForWilaya'])->name('store-agency-for-wilaya');
     
     Route::get('/agencies', [SuperAdminController::class, 'manageAgencies'])->name('manage-agencies');
+    Route::get('/agencies/create', [SuperAdminController::class, 'createAgency'])->name('create-agency');
+    Route::post('/agencies', [SuperAdminController::class, 'storeAgency'])->name('store-agency');
     Route::get('/agencies/{id}', [SuperAdminController::class, 'showAgency'])->name('show-agency');
     Route::post('/agencies/{id}/bank-account', [SuperAdminController::class, 'updateAgencyBankAccount'])->name('update-agency-bank-account');
     Route::get('/agencies/{id}/assign-admin', [SuperAdminController::class, 'assignAgencyAdmin'])->name('assign-agency-admin');
@@ -133,13 +139,12 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
 
     Route::get('/transfer-workers', [SuperAdminController::class, 'manageTransferWorkers'])->name('manage-transfer-workers');
     Route::post('/users/{userId}/transfer', [SuperAdminController::class, 'transferUser'])->name('transfer-user');
+    Route::post('/users/transfer-by-email', [SuperAdminController::class, 'transferUserByEmail'])->name('transfer-user-by-email');
     Route::delete('/users/{userId}', [SuperAdminController::class, 'deleteUser'])->name('delete-user');
 
     // Complaints System
     Route::prefix('complaints')->name('complaints.')->group(function () {
         Route::get('/', [SuperAdminController::class, 'complaints'])->name('index');
-        Route::get('/create', [SuperAdminController::class, 'createComplaint'])->name('create');
-        Route::post('/store', [SuperAdminController::class, 'storeComplaint'])->name('store');
         Route::post('/{id}/respond', [SuperAdminController::class, 'respondToComplaint'])->name('respond');
         Route::post('/{id}/resolve', [SuperAdminController::class, 'resolveComplaint'])->name('resolve');
         Route::delete('/{id}', [SuperAdminController::class, 'deleteComplaint'])->name('delete');
@@ -149,8 +154,6 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
     // Reports System
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [SuperAdminController::class, 'reports'])->name('index');
-        Route::get('/create', [SuperAdminController::class, 'createReport'])->name('create');
-        Route::post('/store', [SuperAdminController::class, 'storeReport'])->name('store');
         Route::get('/{id}', [SuperAdminController::class, 'showReport'])->name('show');
         Route::post('/{id}/respond', [SuperAdminController::class, 'respondToReport'])->name('respond');
         Route::post('/{id}/resolve', [SuperAdminController::class, 'resolveReport'])->name('resolve');
@@ -167,6 +170,9 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Legal Reference
+    Route::get('/law', [LawController::class, 'index'])->name('law');
     
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
@@ -235,6 +241,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:artist'])->prefix('artist')->name('artist.')->group(function () {
     Route::get('/dashboard', [ArtistController::class, 'dashboard'])->name('dashboard');
     
+    // Legal Reference
+    Route::get('/law', [LawController::class, 'index'])->name('law');
+    
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.mark-read');
@@ -271,7 +280,6 @@ Route::middleware(['auth', 'role:artist'])->prefix('artist')->name('artist.')->g
         Route::get('/{id}', [ArtistController::class, 'showComplaint'])->name('show');
     });
 
-    Route::get('/law', [ArtistController::class, 'viewLaw'])->name('law');
 
     // API endpoints for complaints
     Route::get('/api/agency/{agency}/officials', [ArtistController::class, 'getAgencyOfficials'])->name('api.agency.officials');
@@ -279,6 +287,9 @@ Route::middleware(['auth', 'role:artist'])->prefix('artist')->name('artist.')->g
 
 Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->group(function () {
     Route::get('/dashboard', [AgentController::class, 'dashboard'])->name('dashboard');
+    
+    // Legal Reference
+    Route::get('/law', [LawController::class, 'index'])->name('law');
     
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
@@ -289,7 +300,6 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
     Route::get('/profile', [AgentController::class, 'profile'])->name('profile');
     Route::post('/profile', [AgentController::class, 'updateProfile'])->name('profile.update');
     
-    Route::get('/law', [AgentController::class, 'viewLaw'])->name('law');
 
     // Complaints System (Agents can only send complaints)
     Route::prefix('complaints')->name('complaints.')->group(function () {
@@ -331,6 +341,9 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
 
 Route::middleware(['auth', 'role:gestionnaire'])->prefix('gestionnaire')->name('gestionnaire.')->group(function () {
     Route::get('/dashboard', [GestionnaireController::class, 'dashboard'])->name('dashboard');
+    
+    // Legal Reference
+    Route::get('/law', [LawController::class, 'index'])->name('law');
     
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');

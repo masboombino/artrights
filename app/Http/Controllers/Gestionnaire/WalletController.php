@@ -93,6 +93,9 @@ class WalletController extends Controller
         }
 
         DB::transaction(function () use ($pv, $wallet, $data, $gestionnaire) {
+            $agency = $gestionnaire->agency;
+            $agencyBankAccount = $agency && $agency->bank_account_number ? $agency->bank_account_number : 'N/A';
+            
             $pv->cash_received_amount = $data['amount'];
             $pv->payment_status = 'VALIDATED';
             $pv->save();
@@ -106,7 +109,7 @@ class WalletController extends Controller
                 'pv_id' => $pv->id,
                 'direction' => 'IN',
                 'amount' => $data['amount'],
-                'description' => 'Payment confirmed for PV #' . $pv->id,
+                'description' => 'Payment confirmed for PV #' . $pv->id . ' - To agency account: ' . $agencyBankAccount,
             ]);
 
             // Notify agent
@@ -171,6 +174,9 @@ class WalletController extends Controller
 
         DB::transaction(function () use ($pv, $wallet, $artistTotals, $totalAmount) {
             foreach ($artistTotals as $artistId => $amount) {
+                $artist = Artist::find($artistId);
+                $bankAccountNumber = $artist && $artist->bank_account_number ? $artist->bank_account_number : 'N/A';
+                
                 Transaction::create([
                     'pv_id' => $pv->id,
                     'artist_id' => $artistId,
@@ -178,7 +184,7 @@ class WalletController extends Controller
                     'amount' => $amount,
                     'payment_method' => $pv->payment_method ?? 'CASH',
                     'payment_status' => 'VALIDATED',
-                    'description' => 'Payment from PV #' . $pv->id . ' - ' . $pv->shop_name,
+                    'description' => 'Payment from PV #' . $pv->id . ' - ' . $pv->shop_name . ' - To account: ' . $bankAccountNumber,
                 ]);
 
                 $artistWallet = Wallet::firstOrCreate(
@@ -194,7 +200,7 @@ class WalletController extends Controller
                     'pv_id' => $pv->id,
                     'direction' => 'OUT',
                     'amount' => $amount,
-                    'description' => 'Released to artist #' . $artistId,
+                    'description' => 'Released to artist #' . $artistId . ' - Account: ' . $bankAccountNumber,
                 ]);
             }
 
@@ -218,10 +224,11 @@ class WalletController extends Controller
         foreach ($artistTotals as $artistId => $amount) {
             $artist = $artists->get($artistId);
             if ($artist && $artist->user) {
+                $bankAccountNumber = $artist->bank_account_number ? $artist->bank_account_number : 'N/A';
                 NotificationService::send(
                     $artist->user,
                     'Funds released from PV #' . $pv->id,
-                    'Your wallet received ' . number_format($amount, 2, '.', ' ') . ' DA from PV #' . $pv->id . '.',
+                    'Your wallet received ' . number_format($amount, 2, '.', ' ') . ' DA from PV #' . $pv->id . '. Payment will be sent to account: ' . $bankAccountNumber,
                     [
                         'type' => 'pv_funds_released',
                         'pv_id' => $pv->id,

@@ -511,7 +511,7 @@
             <a href="{{ route('superadmin.all-wilayas') }}" class="stat-card clickable" style="text-decoration: none;">
                 <div class="stat-card-icon">🗺️</div>
                 <div class="stat-card-title">Wilayas</div>
-                <div class="stat-card-value">58</div>
+                <div class="stat-card-value">{{ $wilayasCount }}</div>
                 <div class="stat-card-description">Algerian provinces</div>
                 <div class="stat-card-footer">
                     <span>→</span>

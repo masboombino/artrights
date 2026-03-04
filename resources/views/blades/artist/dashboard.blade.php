@@ -675,7 +675,7 @@
                 </a>
                 <a href="{{ route('artist.complaints.index') }}" class="action-button">
                     <span class="action-button-icon">📝</span>
-                    <span class="action-button-text">Complaints & Reports</span>
+                    <span class="action-button-text">Complaints</span>
                 </a>
             </div>
         </div>

@@ -84,6 +84,30 @@
             <x-input-error :messages="$errors->get('identity_document')" class="mt-2" />
         </div>
 
+        <!-- Bank Account Number -->
+        <div class="mb-4">
+            <x-input-label for="bank_account_number" :value="__('Bank or Postal Account Number')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
+            <x-text-input id="bank_account_number" class="block w-full px-4 py-3" type="text" name="bank_account_number" :value="old('bank_account_number')" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <p class="mt-2 text-xs font-medium" style="color: #36454f; opacity: 0.8;">Enter your bank or postal account number where payments will be sent</p>
+            <x-input-error :messages="$errors->get('bank_account_number')" class="mt-2" />
+        </div>
+
+        <!-- Full Name on Account -->
+        <div class="mb-4">
+            <x-input-label for="full_name_on_account" :value="__('Full Name on Account')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
+            <x-text-input id="full_name_on_account" class="block w-full px-4 py-3" type="text" name="full_name_on_account" :value="old('full_name_on_account')" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <p class="mt-2 text-xs font-medium" style="color: #36454f; opacity: 0.8;">Enter the full name as it appears on your bank or postal account</p>
+            <x-input-error :messages="$errors->get('full_name_on_account')" class="mt-2" />
+        </div>
+
+        <!-- Bank Account Proof -->
+        <div class="mb-4">
+            <x-input-label for="bank_account_proof" :value="__('Bank Account Proof (Check, Postal Order, or Document with Account Number)')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
+            <input id="bank_account_proof" class="block w-full px-4 py-3 rounded-lg shadow-sm" type="file" name="bank_account_proof" accept="image/*,.pdf" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <p class="mt-2 text-xs font-medium" style="color: #36454f; opacity: 0.8;">Upload a check image, postal order, or document showing your account number. Accepted formats: JPG, PNG, PDF (Max: 5MB)</p>
+            <x-input-error :messages="$errors->get('bank_account_proof')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mb-4">
             <x-input-label for="password" :value="__('Password')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />

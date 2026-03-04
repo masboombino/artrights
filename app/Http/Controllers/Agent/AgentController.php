@@ -129,16 +129,12 @@ class AgentController extends Controller
         }
         $user->save();
 
-        $agent->badge_number = $validated['badge_number'] ?? $agent->badge_number;
+        // Badge number is readonly for agents, so we don't update it
         $agent->save();
 
         return redirect()->route('agent.profile')->with('success', 'Profile updated successfully.');
     }
 
-    public function viewLaw()
-    {
-        return view('blades.agent.law');
-    }
 
     // Complaints System (Agents can only send complaints)
     public function complaints(Request $request)
@@ -456,6 +452,13 @@ class AgentController extends Controller
 
         if (!$agent) {
             return redirect()->route('dashboard');
+        }
+
+        // Check if agency has bank account number
+        $agency = $agent->agency;
+        if (!$agency || !$agency->bank_account_number) {
+            return redirect()->route('agent.dashboard')
+                ->with('error', 'Your agency must have a bank account number before creating PVs. Please contact your admin or super admin to add the agency bank account information.');
         }
 
         $mission = null;

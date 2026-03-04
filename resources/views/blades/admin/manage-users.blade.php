@@ -21,6 +21,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Agency</th>
+                        <th>Bank Account Number</th>
                         <th>Birth Date</th>
                         <th>Registered At</th>
                         <th>Actions</th>
@@ -33,6 +34,7 @@
                             <td>{{ $artist->user->email }}</td>
                             <td>{{ $artist->user->phone ?? 'N/A' }}</td>
                             <td>{{ $artist->agency ? $artist->agency->agency_name . ' - ' . $artist->agency->wilaya : 'N/A' }}</td>
+                            <td style="font-family: monospace;">{{ $artist->bank_account_number ?? 'N/A' }}</td>
                             <td>{{ $artist->birth_date ?? 'N/A' }}</td>
                             <td>{{ $artist->user->created_at->format('Y-m-d H:i') }}</td>
                             <td>
@@ -54,7 +56,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7">No pending users</td>
+                            <td colspan="8">No pending users</td>
                         </tr>
                     @endforelse
                 </tbody>

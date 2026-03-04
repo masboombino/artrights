@@ -83,18 +83,25 @@
                                     {{ $agent->agency ? $agent->agency->wilaya : 'Not Assigned' }}
                                 </div>
                             </div>
+                            @if($agent->agency && $agent->agency->bank_account_number)
+                            <div style="grid-column: 1 / -1;">
+                                <label style="display: block; color: #193948; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">Bank Account Number</label>
+                                <div style="background-color: white; border: 1px solid #193948; border-radius: 5px; padding: 0.75rem; color: #193948; font-weight: 500; font-family: monospace;">
+                                    {{ $agent->agency->bank_account_number }}
+                                </div>
+                                <p style="color: #193948; font-size: 0.75rem; margin-top: 0.5rem; font-style: italic;">Agency bank account number for payments</p>
+                            </div>
+                            @endif
                         </div>
                         <p style="color: #193948; font-size: 0.8rem; margin-top: 1rem; font-style: italic;">Agency information cannot be changed by the user</p>
                     </div>
 
                     <div>
                         <label for="badge_number" class="block text-sm font-medium mb-2" style="color: #193948;">Badge Number</label>
-                        <input type="text" name="badge_number" id="badge_number" value="{{ old('badge_number', $agent->badge_number) }}"
+                        <input type="text" name="badge_number" id="badge_number" value="{{ old('badge_number', $agent->badge_number) }}" readonly
                             class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            style="background-color: white; color: #193948;">
-                        @error('badge_number')
-                            <p class="mt-1 text-sm" style="color: #E76268;">{{ $message }}</p>
-                        @enderror
+                            style="background-color: #f9f9f9; color: #666666; cursor: not-allowed;">
+                        <p style="color: #666666; font-size: 0.8rem; margin-top: 0.5rem; font-style: italic;">Badge number cannot be changed by agents</p>
                     </div>
 
                     <div>

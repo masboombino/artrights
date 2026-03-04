@@ -5,35 +5,21 @@ use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\AgentController;
 use App\Http\Controllers\Api\AdminController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\PersonalAccessToken;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/agencies', [AuthController::class, 'getAgencies']);
 
-// Media files route (public access for authenticated users)
+// Test route for Bearer token authentication
+Route::middleware('auth:sanctum')->get('/me-test', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'authenticated' => true,
+        'user' => $request->user(),
+    ]);
+});
+
+// Media files route (authenticated users only)
 Route::middleware('auth:sanctum')->get('/media/{path}', function (string $path, \Illuminate\Http\Request $request) {
-    // Support bearer token in query param (for clients that can't set headers easily)
-    if (!$request->user()) {
-        $rawToken = $request->bearerToken() ?: $request->query('token');
-        if ($rawToken) {
-            $pat = PersonalAccessToken::findToken($rawToken);
-            if ($pat) {
-                Auth::setUser($pat->tokenable);
-            }
-        }
-    }
-
-    if (!$request->user()) {
-        \Log::warning('Media request unauthorized', [
-            'path' => $path,
-            'has_header_token' => (bool) $request->bearerToken(),
-            'has_query_token' => $request->has('token'),
-        ]);
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }
-
     // Clean the path - remove any leading/trailing slashes
     $path = ltrim($path, '/');
     
@@ -132,8 +118,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/notifications/mark-all-read', [ArtistController::class, 'markAllNotificationsRead']);
         Route::delete('/notifications/{id}', [ArtistController::class, 'deleteNotification']);
 
-        // Law
-        Route::get('/law', [ArtistController::class, 'getLaw']);
+
     });
 
     // Admin Routes (for replying to complaints)
@@ -190,7 +175,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/notifications/mark-all-read', [AgentController::class, 'markAllNotificationsRead']);
         Route::delete('/notifications/{id}', [AgentController::class, 'deleteNotification']);
 
-        // Law
-        Route::get('/law', [AgentController::class, 'getLaw']);
+
     });
 });

@@ -100,94 +100,122 @@ class NotificationController extends Controller
 
             // Build URL based on type and available data
             if (($type === 'artist_registration' || $type === 'new_artist') && isset($notificationData['artist_id'])) {
-                if ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.view-artist', $notificationData['artist_id']);
-                } elseif (isset($notificationData['link'])) {
-                    $redirectUrl = $notificationData['link'];
+                if (\App\Models\Artist::find($notificationData['artist_id'])) {
+                    if ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.view-artist', $notificationData['artist_id']);
+                    } elseif (isset($notificationData['link'])) {
+                        $redirectUrl = $notificationData['link'];
+                    }
                 }
             } elseif ($type === 'admin_complaint' && isset($notificationData['complaint_id'])) {
-                if ($routePrefix === 'superadmin') {
-                    $redirectUrl = route('superadmin.complaints.show', $notificationData['complaint_id']);
+                if (\App\Models\Complain::find($notificationData['complaint_id'])) {
+                    if ($routePrefix === 'superadmin') {
+                        $redirectUrl = route('superadmin.complaints.show', $notificationData['complaint_id']);
+                    }
                 }
             } elseif (in_array($type, ['artwork_approved', 'artwork_rejected', 'artwork_activated', 'artwork_submitted']) && isset($notificationData['artwork_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
-                } elseif ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.show-artwork', $notificationData['artwork_id']);
-                } elseif ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.dashboard');
+                if (\App\Models\Artwork::find($notificationData['artwork_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
+                    } elseif ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.show-artwork', $notificationData['artwork_id']);
+                    } elseif ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.dashboard');
+                    }
                 }
             } elseif (in_array($type, ['complaint_created', 'complaint_answered', 'complaint_resolved', 'complaint_status_updated', 'complaint_taken', 'complaint_in_progress', 'complaint_forwarded', 'complaint_assigned']) && isset($notificationData['complaint_id'])) {
-                if ($routePrefix === 'admin') {
-                    return redirect()->route('admin.complaints.show', $notificationData['complaint_id']);
-                } elseif ($routePrefix === 'gestionnaire') {
-                    return redirect()->route('gestionnaire.complaints.show', $notificationData['complaint_id']);
-                } elseif ($routePrefix === 'agent') {
-                    return redirect()->route('agent.complaints.show', $notificationData['complaint_id']);
-                } elseif ($routePrefix === 'artist') {
-                    return redirect()->route('artist.complaints.show', $notificationData['complaint_id']);
-                } elseif ($routePrefix === 'superadmin') {
-                    return redirect()->route('superadmin.complaints.show', $notificationData['complaint_id']);
+                if (\App\Models\Complain::find($notificationData['complaint_id'])) {
+                    if ($routePrefix === 'admin') {
+                        return redirect()->route('admin.complaints.show', $notificationData['complaint_id']);
+                    } elseif ($routePrefix === 'gestionnaire') {
+                        return redirect()->route('gestionnaire.complaints.show', $notificationData['complaint_id']);
+                    } elseif ($routePrefix === 'agent') {
+                        return redirect()->route('agent.complaints.show', $notificationData['complaint_id']);
+                    } elseif ($routePrefix === 'artist') {
+                        return redirect()->route('artist.complaints.show', $notificationData['complaint_id']);
+                    } elseif ($routePrefix === 'superadmin') {
+                        return redirect()->route('superadmin.complaints.show', $notificationData['complaint_id']);
+                    }
                 }
             } elseif ((str_contains($type ?? '', 'wallet') || $type === 'wallet_recharge_request') && isset($notificationData['wallet_recharge_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.wallet');
-                } elseif ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.wallet-recharge.show', $notificationData['wallet_recharge_id']);
-                } elseif ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.dashboard');
+                if (\App\Models\WalletRechargeRequest::find($notificationData['wallet_recharge_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.wallet');
+                    } elseif ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.wallet-recharge.show', $notificationData['wallet_recharge_id']);
+                    } elseif ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.dashboard');
+                    }
                 }
             } elseif (str_contains($type ?? '', 'wallet') && $routePrefix === 'artist') {
                 $redirectUrl = route('artist.wallet');
             } elseif (in_array($type, ['pv_opened', 'pv_finalized', 'pv_closed', 'pv_payment_validated', 'pv_agent_confirmed']) && isset($notificationData['pv_id'])) {
-                if ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.pvs.show', $notificationData['pv_id']);
-                } elseif ($routePrefix === 'agent') {
-                    $redirectUrl = route('agent.pvs.show', $notificationData['pv_id']);
+                if (\App\Models\PV::find($notificationData['pv_id'])) {
+                    if ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.pvs.show', $notificationData['pv_id']);
+                    } elseif ($routePrefix === 'agent') {
+                        $redirectUrl = route('agent.pvs.show', $notificationData['pv_id']);
+                    }
                 }
             } elseif (in_array($type, ['agent_created', 'artist_account_approved']) && isset($notificationData['user_id'])) {
-                if ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.view-user', $notificationData['user_id']);
-                } elseif ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.agents.show', $notificationData['user_id']);
+                if (\App\Models\User::find($notificationData['user_id'])) {
+                    if ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.view-user', $notificationData['user_id']);
+                    } elseif ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.agents.show', $notificationData['user_id']);
+                    }
                 }
             } elseif (in_array($type, ['report_created', 'report_answered']) && isset($notificationData['report_id'])) {
-                if ($routePrefix === 'superadmin') {
-                    $redirectUrl = route('superadmin.reports.show', $notificationData['report_id']);
-                } elseif ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.reports.show', $notificationData['report_id']);
+                if (\App\Models\Complain::find($notificationData['report_id'])) {
+                    if ($routePrefix === 'superadmin') {
+                        $redirectUrl = route('superadmin.reports.show', $notificationData['report_id']);
+                    } elseif ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.reports.show', $notificationData['report_id']);
+                    }
                 }
             } elseif ($type === 'platform_tax_paid' && isset($notificationData['artwork_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
+                if (\App\Models\Artwork::find($notificationData['artwork_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
+                    }
                 }
             } elseif ($type === 'pv_artwork_usage' && isset($notificationData['artwork_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
+                if (\App\Models\Artwork::find($notificationData['artwork_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.show-artwork', $notificationData['artwork_id']);
+                    }
                 }
             } elseif ($type === 'mission_assigned' && isset($notificationData['mission_id'])) {
-                if ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.missions.show', $notificationData['mission_id']);
-                } elseif ($routePrefix === 'agent') {
-                    $redirectUrl = route('agent.missions.show', $notificationData['mission_id']);
-                } elseif ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.dashboard');
+                if (\App\Models\Mission::find($notificationData['mission_id'])) {
+                    if ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.missions.show', $notificationData['mission_id']);
+                    } elseif ($routePrefix === 'agent') {
+                        $redirectUrl = route('agent.missions.show', $notificationData['mission_id']);
+                    } elseif ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.dashboard');
+                    }
                 }
             } elseif ($type === 'pv_funds_released' && isset($notificationData['pv_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.wallet');
+                if (\App\Models\PV::find($notificationData['pv_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.wallet');
+                    }
                 }
             } elseif (in_array($type, ['wallet_recharge_approved', 'wallet_recharge_rejected']) && isset($notificationData['wallet_recharge_id'])) {
-                if ($routePrefix === 'artist') {
-                    $redirectUrl = route('artist.wallet');
-                } elseif ($routePrefix === 'gestionnaire') {
-                    $redirectUrl = route('gestionnaire.wallet-recharge.show', $notificationData['wallet_recharge_id']);
+                if (\App\Models\WalletRechargeRequest::find($notificationData['wallet_recharge_id'])) {
+                    if ($routePrefix === 'artist') {
+                        $redirectUrl = route('artist.wallet');
+                    } elseif ($routePrefix === 'gestionnaire') {
+                        $redirectUrl = route('gestionnaire.wallet-recharge.show', $notificationData['wallet_recharge_id']);
+                    }
                 }
             } elseif ($type === 'super_admin_response' && isset($notificationData['complaint_id'])) {
-                if ($routePrefix === 'admin') {
-                    $redirectUrl = route('admin.complaints.sent');
-                } elseif ($routePrefix === 'superadmin') {
-                    $redirectUrl = route('superadmin.complaints.index');
+                if (\App\Models\Complain::find($notificationData['complaint_id'])) {
+                    if ($routePrefix === 'admin') {
+                        $redirectUrl = route('admin.complaints.sent');
+                    } elseif ($routePrefix === 'superadmin') {
+                        $redirectUrl = route('superadmin.complaints.index');
+                    }
                 }
             }
         }
@@ -195,6 +223,11 @@ class NotificationController extends Controller
         // Fallback to stored link if we couldn't build a URL from type
         if (!$redirectUrl && isset($notificationData['link'])) {
             $redirectUrl = $notificationData['link'];
+        }
+
+        // If we have a type but no redirectUrl after all checks, it means the content was likely deleted
+        if (!$redirectUrl && $type && $type !== 'general') {
+             return view('blades.shared.deleted');
         }
 
         // Default redirect to notifications page if no URL found
@@ -210,6 +243,7 @@ class NotificationController extends Controller
         }
 
         return redirect($redirectUrl);
+
     }
 
     /**

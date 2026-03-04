@@ -48,6 +48,9 @@ class SuperAdminController extends Controller
             $q->whereIn('name', ['admin', 'gestionnaire', 'agent', 'artist']);
         })->count();
         
+        // Count total wilayas (total Algerian provinces - fixed number)
+        $wilayasCount = 70; // Total Algerian provinces
+        
         return view('blades.superadmin.dashboard', compact(
             'user',
             'agenciesCount',
@@ -57,7 +60,8 @@ class SuperAdminController extends Controller
             'missionsInProgress',
             'walletTotal',
             'pendingReleases',
-            'workersCount'
+            'workersCount',
+            'wilayasCount'
         ));
     }
 
@@ -75,7 +79,10 @@ class SuperAdminController extends Controller
             41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
             46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
             51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
-            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa'
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
         ];
         
         $agencies = Agency::with(['admin', 'users', 'artists', 'agents.user', 'gestionnaires', 'wallet'])
@@ -84,6 +91,114 @@ class SuperAdminController extends Controller
             ->get();
         
         return view('blades.superadmin.manage-agencies', compact('wilayas', 'agencies'));
+    }
+
+    public function createAgency()
+    {
+        $wilayas = [
+            1 => 'Adrar', 2 => 'Chlef', 3 => 'Laghouat', 4 => 'Oum El Bouaghi', 5 => 'Batna',
+            6 => 'Béjaïa', 7 => 'Biskra', 8 => 'Béchar', 9 => 'Blida', 10 => 'Bouira',
+            11 => 'Tamanrasset', 12 => 'Tébessa', 13 => 'Tlemcen', 14 => 'Tiaret', 15 => 'Tizi Ouzou',
+            16 => 'Alger', 17 => 'Djelfa', 18 => 'Jijel', 19 => 'Setif', 20 => 'Saïda',
+            21 => 'Skikda', 22 => 'Sidi Bel Abbès', 23 => 'Annaba', 24 => 'Guelma', 25 => 'Constantine',
+            26 => 'Médéa', 27 => 'Mostaganem', 28 => 'Msila', 29 => 'Mascara', 30 => 'Ouargla',
+            31 => 'Oran', 32 => 'El Bayadh', 33 => 'Illizi', 34 => 'Bordj Bou Arréridj', 35 => 'Boumerdès',
+            36 => 'El Tarf', 37 => 'Tindouf', 38 => 'Tissemsilt', 39 => 'El Oued', 40 => 'Khenchela',
+            41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
+            46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
+            51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
+        ];
+        
+        // Get wilayas that don't have agencies yet
+        $existingWilayas = Agency::pluck('wilaya')->toArray();
+        $availableWilayas = array_filter($wilayas, function($name) use ($existingWilayas) {
+            return !in_array($name, $existingWilayas);
+        });
+        
+        return view('blades.superadmin.create-agency', compact('wilayas', 'availableWilayas'));
+    }
+
+    public function storeAgency(Request $request)
+    {
+        $wilayas = [
+            1 => 'Adrar', 2 => 'Chlef', 3 => 'Laghouat', 4 => 'Oum El Bouaghi', 5 => 'Batna',
+            6 => 'Béjaïa', 7 => 'Biskra', 8 => 'Béchar', 9 => 'Blida', 10 => 'Bouira',
+            11 => 'Tamanrasset', 12 => 'Tébessa', 13 => 'Tlemcen', 14 => 'Tiaret', 15 => 'Tizi Ouzou',
+            16 => 'Alger', 17 => 'Djelfa', 18 => 'Jijel', 19 => 'Setif', 20 => 'Saïda',
+            21 => 'Skikda', 22 => 'Sidi Bel Abbès', 23 => 'Annaba', 24 => 'Guelma', 25 => 'Constantine',
+            26 => 'Médéa', 27 => 'Mostaganem', 28 => 'Msila', 29 => 'Mascara', 30 => 'Ouargla',
+            31 => 'Oran', 32 => 'El Bayadh', 33 => 'Illizi', 34 => 'Bordj Bou Arréridj', 35 => 'Boumerdès',
+            36 => 'El Tarf', 37 => 'Tindouf', 38 => 'Tissemsilt', 39 => 'El Oued', 40 => 'Khenchela',
+            41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
+            46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
+            51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
+        ];
+
+        $request->validate([
+            'wilaya_code' => 'required|integer|min:1|max:70',
+            'agency_name' => 'required|string|max:255',
+            'bank_account_number' => 'nullable|string|max:255',
+            'admin_name' => 'required|string|max:255',
+            'admin_email' => 'required|string|email|max:255|unique:users,email',
+            'admin_password' => 'required|string|min:8|confirmed',
+            'admin_phone' => 'nullable|string|max:255',
+        ]);
+
+        $wilayaName = $wilayas[$request->wilaya_code] ?? null;
+        if (!$wilayaName) {
+            return redirect()->back()->withErrors(['wilaya_code' => 'Invalid wilaya selected.'])->withInput();
+        }
+
+        // Multiple agencies can exist in the same wilaya
+        // No restriction on agency count per wilaya
+
+        try {
+            DB::beginTransaction();
+
+            // Create agency
+            $agency = Agency::create([
+                'agency_name' => $request->agency_name,
+                'wilaya' => $wilayaName,
+                'bank_account_number' => $request->bank_account_number,
+            ]);
+
+            // Create agency wallet
+            AgencyWallet::create([
+                'agency_id' => $agency->id,
+                'balance' => 0,
+            ]);
+
+            // Create admin user
+            $admin = User::create([
+                'name' => $request->admin_name,
+                'email' => $request->admin_email,
+                'password' => Hash::make($request->admin_password),
+                'phone' => $request->admin_phone,
+                'agency_id' => $agency->id,
+                'role_id' => Role::where('name', 'admin')->first()->id,
+            ]);
+
+            $admin->assignRole('admin');
+
+            // Update agency admin_id
+            $agency->admin_id = $admin->id;
+            $agency->save();
+
+            DB::commit();
+
+            return redirect()->route('superadmin.show-agency', $agency->id)->with('success', 'Agency created successfully with admin account.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function managePVs()
@@ -205,7 +320,10 @@ class SuperAdminController extends Controller
             41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
             46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
             51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
-            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa'
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
         ];
 
         $request->validate([
@@ -213,7 +331,7 @@ class SuperAdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:255',
-            'wilaya_code' => 'required|integer|min:1|max:58',
+            'wilaya_code' => 'required|integer|min:1|max:70',
         ]);
 
         if (!isset($wilayas[$request->wilaya_code])) {
@@ -762,7 +880,10 @@ class SuperAdminController extends Controller
             41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
             46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
             51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
-            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa'
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
         ];
 
         // Start building the query
@@ -915,6 +1036,7 @@ class SuperAdminController extends Controller
             $newAgencyName = $newAgency->agency_name;
 
             // Handle Admin transfer - update agency.admin_id
+            $adminSwapped = false;
             if ($user->hasRole('admin')) {
                 // Step 1: Remove admin from old agency if exists
                 if ($oldAgencyId) {
@@ -927,19 +1049,32 @@ class SuperAdminController extends Controller
                     }
                 }
 
-                // Step 2: Handle new agency - remove existing admin if any
+                // Step 2: Handle new agency - swap admins if exists
                 if ($newAgency->admin_id && $newAgency->admin_id != $user->id) {
-                    // Find and remove the old admin from the new agency
-                    $oldAdmin = User::find($newAgency->admin_id);
-                    if ($oldAdmin) {
-                        // Find and clear the old admin's agency relationship
-                        $oldAdminOldAgency = Agency::where('admin_id', $oldAdmin->id)->first();
-                        if ($oldAdminOldAgency) {
-                            $oldAdminOldAgency->admin_id = null;
-                            $oldAdminOldAgency->save();
+                    $existingAdmin = User::find($newAgency->admin_id);
+                    if ($existingAdmin && $oldAgency) {
+                        // Swap: existing admin goes to old agency
+                        $oldAgency->admin_id = $existingAdmin->id;
+                        $oldAgency->save();
+                        
+                        $existingAdmin->agency_id = $oldAgency->id;
+                        $existingAdmin->save();
+                        
+                        $adminSwapped = true;
+                        
+                        // Send notification to swapped admin (no email, only in-app notification)
+                        NotificationService::send(
+                            $existingAdmin->id,
+                            'Agency Transfer',
+                            "You have been transferred to {$oldAgency->agency_name} as part of an admin exchange.",
+                            ['type' => 'admin_transfer', 'agency_id' => $oldAgency->id]
+                        );
+                    } else {
+                        // Just remove existing admin if no old agency to swap to
+                        if ($existingAdmin) {
+                            $existingAdmin->agency_id = null;
+                            $existingAdmin->save();
                         }
-                        $oldAdmin->agency_id = null;
-                        $oldAdmin->save();
                     }
                     // Clear admin_id from new agency before assigning new admin
                     $newAgency->admin_id = null;
@@ -977,10 +1112,23 @@ class SuperAdminController extends Controller
 
             DB::commit();
 
-            // Send email notification to the user
+            // Send email notification to the user (always send to the transferred user)
             Mail::to($user->email)->send(new AgencyTransferEmail($user, $newAgency, $oldAgencyName));
+            
+            // Send notification to the user
+            NotificationService::send(
+                $user->id,
+                'Agency Transfer',
+                "You have been transferred to {$newAgency->agency_name}.",
+                ['type' => 'admin_transfer', 'agency_id' => $newAgency->id]
+            );
 
-            return redirect()->back()->with('success', 'User transferred successfully from "' . ($oldAgencyName ?? 'None') . '" to "' . $newAgencyName . '".');
+            $successMessage = 'User transferred successfully from "' . ($oldAgencyName ?? 'None') . '" to "' . $newAgencyName . '".';
+            if ($adminSwapped) {
+                $successMessage .= ' Admin exchange completed - both admins have been notified.';
+            }
+
+            return redirect()->back()->with('success', $successMessage);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while transferring the user: ' . $e->getMessage()]);
@@ -1177,6 +1325,7 @@ class SuperAdminController extends Controller
                 'agentProfile.user',
                 'agency',
             ])
+            ->where('target_role', 'super_admin')
             ->notHiddenBy(Auth::id());
 
         // Filter by type
@@ -1195,10 +1344,10 @@ class SuperAdminController extends Controller
 
         // Statistics
         $stats = [
-            'total_complaints' => Complain::complaints()->count(),
-            'pending_complaints' => Complain::complaints()->where('status', 'PENDING')->count(),
-            'total_reports' => Complain::reports()->count(),
-            'pending_reports' => Complain::reports()->where('status', 'PENDING')->count(),
+            'total_complaints' => Complain::complaints()->where('target_role', 'super_admin')->count(),
+            'pending_complaints' => Complain::complaints()->where('target_role', 'super_admin')->where('status', 'PENDING')->count(),
+            'total_reports' => Complain::reports()->where('target_role', 'super_admin')->count(),
+            'pending_reports' => Complain::reports()->where('target_role', 'super_admin')->where('status', 'PENDING')->count(),
             'admin_complaints' => Complain::where('complaint_type', 'ADMIN_TO_SUPERADMIN')->count(),
         ];
 
@@ -1290,70 +1439,47 @@ class SuperAdminController extends Controller
         return view('blades.superadmin.complaints.sent', compact('items'));
     }
 
-    public function createComplaintOrReport(Request $request)
+    public function reports(Request $request)
     {
-        $type = $request->get('type', 'complaint');
-        $targets = array_keys(config('complaints.targets.super_admin', []));
-        return view('blades.superadmin.complaints.create', compact('targets'));
+        return $this->messages($request);
     }
 
-    public function storeComplaintOrReport(Request $request)
+    public function reportsInbox(Request $request)
     {
-        $superAdmin = auth()->user();
-        $type = $request->get('type', 'complaint');
-
-        $request->validate([
-            'target_role' => 'required|string|in:' . implode(',', array_keys(config('complaints.targets.super_admin', []))),
-            'target_user_id' => 'nullable|exists:users,id',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-            'location_link' => 'nullable|url',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png',
-        ]);
-
-        $images = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $images[] = $image->store('complaints', 'public');
-            }
-        }
-
-        $complaintType = Complain::resolveType('super_admin', $request->target_role);
-        
-        $complaint = Complain::create([
-            'type' => $type === 'report' ? Complain::TYPE_REPORT : Complain::TYPE_COMPLAINT,
-            'complaint_type' => $complaintType,
-            'super_admin_id' => $superAdmin->id,
-            'sender_user_id' => $superAdmin->id,
-            'sender_role' => 'super_admin',
-            'target_role' => $request->target_role,
-            'target_user_id' => $request->target_user_id,
-            'subject' => $request->subject,
-            'message' => $request->message,
-            'location_link' => $request->location_link,
-            'images' => !empty($images) ? $images : null,
-            'status' => 'PENDING',
-        ]);
-
-        $notificationType = $type === 'report' ? 'report_created' : 'complaint_created';
-        $itemType = $type === 'report' ? 'report' : 'complaint';
-        
-        if ($request->target_user_id) {
-            NotificationService::send(
-                $request->target_user_id,
-                'New ' . $itemType . ' from Super Admin',
-                'Subject: ' . $request->subject,
-                [
-                    'type' => $notificationType,
-                    'complaint_id' => $complaint->id,
-                    'link' => route('admin.complaints.index'),
-                ]
-            );
-        }
-
-        return redirect()->route('superadmin.complaints.index')
-            ->with('success', ucfirst($itemType) . ' submitted successfully.');
+        return $this->inbox($request);
     }
+
+    public function reportsSent(Request $request)
+    {
+        return $this->sent($request);
+    }
+
+    public function createReport(Request $request)
+    {
+        return $this->createComplaintOrReport($request);
+    }
+
+    public function storeReport(Request $request)
+    {
+        return $this->storeComplaintOrReport($request);
+    }
+
+    public function showReport($id)
+    {
+        return $this->showMessage($id);
+    }
+
+    public function respondToReport(Request $request, $id)
+    {
+        return $this->respondMessage($request, $id);
+    }
+
+    public function resolveReport($id)
+    {
+        return $this->resolveMessage($id);
+    }
+    
+    // Created/Store methods removed as Super Admin cannot create complaints/reports
 
     public function adminComplaints()
     {
@@ -1477,7 +1603,10 @@ class SuperAdminController extends Controller
             41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
             46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
             51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
-            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa'
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
         ];
 
         // Get all agencies
@@ -1612,7 +1741,10 @@ class SuperAdminController extends Controller
             41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
             46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
             51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
-            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa'
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
         ];
 
         if (!isset($wilayas[$wilayaCode])) {
@@ -1732,6 +1864,111 @@ class SuperAdminController extends Controller
             'artists',
             'stats'
         ));
+    }
+
+    public function createAgencyForWilaya($wilayaCode)
+    {
+        $wilayas = [
+            1 => 'Adrar', 2 => 'Chlef', 3 => 'Laghouat', 4 => 'Oum El Bouaghi', 5 => 'Batna',
+            6 => 'Béjaïa', 7 => 'Biskra', 8 => 'Béchar', 9 => 'Blida', 10 => 'Bouira',
+            11 => 'Tamanrasset', 12 => 'Tébessa', 13 => 'Tlemcen', 14 => 'Tiaret', 15 => 'Tizi Ouzou',
+            16 => 'Alger', 17 => 'Djelfa', 18 => 'Jijel', 19 => 'Setif', 20 => 'Saïda',
+            21 => 'Skikda', 22 => 'Sidi Bel Abbès', 23 => 'Annaba', 24 => 'Guelma', 25 => 'Constantine',
+            26 => 'Médéa', 27 => 'Mostaganem', 28 => 'Msila', 29 => 'Mascara', 30 => 'Ouargla',
+            31 => 'Oran', 32 => 'El Bayadh', 33 => 'Illizi', 34 => 'Bordj Bou Arréridj', 35 => 'Boumerdès',
+            36 => 'El Tarf', 37 => 'Tindouf', 38 => 'Tissemsilt', 39 => 'El Oued', 40 => 'Khenchela',
+            41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
+            46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
+            51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
+        ];
+
+        if (!isset($wilayas[$wilayaCode])) {
+            abort(404, 'Wilaya not found');
+        }
+
+        $wilayaName = $wilayas[$wilayaCode];
+
+        return view('blades.superadmin.create-agency-for-wilaya', compact('wilayaCode', 'wilayaName'));
+    }
+
+    public function storeAgencyForWilaya(Request $request, $wilayaCode)
+    {
+        $wilayas = [
+            1 => 'Adrar', 2 => 'Chlef', 3 => 'Laghouat', 4 => 'Oum El Bouaghi', 5 => 'Batna',
+            6 => 'Béjaïa', 7 => 'Biskra', 8 => 'Béchar', 9 => 'Blida', 10 => 'Bouira',
+            11 => 'Tamanrasset', 12 => 'Tébessa', 13 => 'Tlemcen', 14 => 'Tiaret', 15 => 'Tizi Ouzou',
+            16 => 'Alger', 17 => 'Djelfa', 18 => 'Jijel', 19 => 'Setif', 20 => 'Saïda',
+            21 => 'Skikda', 22 => 'Sidi Bel Abbès', 23 => 'Annaba', 24 => 'Guelma', 25 => 'Constantine',
+            26 => 'Médéa', 27 => 'Mostaganem', 28 => 'Msila', 29 => 'Mascara', 30 => 'Ouargla',
+            31 => 'Oran', 32 => 'El Bayadh', 33 => 'Illizi', 34 => 'Bordj Bou Arréridj', 35 => 'Boumerdès',
+            36 => 'El Tarf', 37 => 'Tindouf', 38 => 'Tissemsilt', 39 => 'El Oued', 40 => 'Khenchela',
+            41 => 'Souk Ahras', 42 => 'Tipaza', 43 => 'Mila', 44 => 'Aïn Defla', 45 => 'Naâma',
+            46 => 'Aïn Témouchent', 47 => 'Ghardaïa', 48 => 'Relizane', 49 => 'Timimoun', 50 => 'Bordj Badji Mokhtar',
+            51 => 'Ouled Djellal', 52 => 'Béni Abbès', 53 => 'In Salah', 54 => 'In Guezzam', 55 => 'Touggourt',
+            56 => 'Djanet', 57 => 'El M\'Ghair', 58 => 'El Meniaa',
+            59 => 'El Hegueir', 60 => 'Sebdou', 61 => 'Beni Saf', 62 => 'Telerghma', 63 => 'Azzaba',
+            64 => 'Djemila', 65 => 'El Eulma', 66 => 'Barika', 67 => 'Menaa', 68 => 'Ksar El Hirane',
+            69 => 'Sidi Khaled', 70 => 'Sidi Aissa'
+        ];
+
+        if (!isset($wilayas[$wilayaCode])) {
+            abort(404, 'Wilaya not found');
+        }
+
+        $wilayaName = $wilayas[$wilayaCode];
+
+        $request->validate([
+            'agency_name' => 'required|string|max:255',
+            'bank_account_number' => 'nullable|string|max:255',
+            'admin_name' => 'required|string|max:255',
+            'admin_email' => 'required|string|email|max:255|unique:users,email',
+            'admin_password' => 'required|string|min:8|confirmed',
+            'admin_phone' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Create agency
+            $agency = Agency::create([
+                'agency_name' => $request->agency_name,
+                'wilaya' => $wilayaName,
+                'bank_account_number' => $request->bank_account_number,
+            ]);
+
+            // Create agency wallet
+            AgencyWallet::create([
+                'agency_id' => $agency->id,
+                'balance' => 0,
+            ]);
+
+            // Create admin user
+            $admin = User::create([
+                'name' => $request->admin_name,
+                'email' => $request->admin_email,
+                'password' => Hash::make($request->admin_password),
+                'phone' => $request->admin_phone,
+                'agency_id' => $agency->id,
+                'role_id' => Role::where('name', 'admin')->first()->id,
+            ]);
+
+            $admin->assignRole('admin');
+
+            // Update agency admin_id
+            $agency->admin_id = $admin->id;
+            $agency->save();
+
+            DB::commit();
+
+            return redirect()->route('superadmin.show-wilaya', $wilayaCode)->with('success', 'Agency created successfully for ' . $wilayaName . '.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()])->withInput();
+        }
     }
 
     // Law Management
@@ -1976,6 +2213,128 @@ class SuperAdminController extends Controller
                 ]
             ]
         ]);
+    }
+
+    /**
+     * Transfer user by email search
+     */
+    public function transferUserByEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'new_agency_id' => 'required|exists:agencies,id',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::where('email', $request->email)->with(['roles', 'artist', 'agent'])->firstOrFail();
+            $oldAgencyId = $user->agency_id;
+            $newAgencyId = $request->new_agency_id;
+
+            // Check if user is being transferred to the same agency
+            if ($oldAgencyId == $newAgencyId) {
+                DB::rollBack();
+                return redirect()->back()->withErrors(['email' => 'User is already in this agency.']);
+            }
+
+            $newAgency = Agency::findOrFail($newAgencyId);
+            $oldAgency = $oldAgencyId ? Agency::find($oldAgencyId) : null;
+            $oldAgencyName = $oldAgency ? $oldAgency->agency_name : null;
+
+            // Handle Admin transfer with swap
+            $adminSwapped = false;
+            if ($user->hasRole('admin')) {
+                // Remove admin from old agency if exists
+                if ($oldAgencyId) {
+                    $oldAgency = Agency::where('admin_id', $user->id)
+                        ->where('id', $oldAgencyId)
+                        ->first();
+                    if ($oldAgency) {
+                        $oldAgency->admin_id = null;
+                        $oldAgency->save();
+                    }
+                }
+
+                // Handle new agency - swap admins if exists
+                if ($newAgency->admin_id && $newAgency->admin_id != $user->id) {
+                    $existingAdmin = User::find($newAgency->admin_id);
+                    if ($existingAdmin && $oldAgency) {
+                        // Swap: existing admin goes to old agency
+                        $oldAgency->admin_id = $existingAdmin->id;
+                        $oldAgency->save();
+                        
+                        $existingAdmin->agency_id = $oldAgency->id;
+                        $existingAdmin->save();
+                        
+                        $adminSwapped = true;
+                        
+                        // Send notification to swapped admin (no email, only in-app notification)
+                        NotificationService::send(
+                            $existingAdmin->id,
+                            'Agency Transfer',
+                            "You have been transferred to {$oldAgency->agency_name} as part of an admin exchange.",
+                            ['type' => 'admin_transfer', 'agency_id' => $oldAgency->id]
+                        );
+                    } else {
+                        // Just remove existing admin if no old agency to swap to
+                        if ($existingAdmin) {
+                            $existingAdmin->agency_id = null;
+                            $existingAdmin->save();
+                        }
+                    }
+                }
+
+                // Assign this admin to the new agency
+                $newAgency->admin_id = $user->id;
+                $newAgency->save();
+            }
+
+            // Update user agency
+            $user->agency_id = $newAgencyId;
+            $user->save();
+
+            // Update artist agency if exists
+            if ($user->artist) {
+                $user->artist->agency_id = $newAgencyId;
+                $user->artist->save();
+            }
+
+            // Update agent agency if exists
+            if ($user->agent) {
+                $user->agent->agency_id = $newAgencyId;
+                $user->agent->save();
+            }
+
+            // Handle Gestionnaire transfer - update missions agency_id
+            if ($user->hasRole('gestionnaire')) {
+                Mission::where('gestionnaire_id', $user->id)
+                    ->update(['agency_id' => $newAgencyId]);
+            }
+
+            DB::commit();
+
+            // Send email notification to the user (always send to the transferred user)
+            Mail::to($user->email)->send(new AgencyTransferEmail($user, $newAgency, $oldAgencyName));
+            
+            // Send notification to the user
+            NotificationService::send(
+                $user->id,
+                'Agency Transfer',
+                "You have been transferred to {$newAgency->agency_name}.",
+                ['type' => 'admin_transfer', 'agency_id' => $newAgency->id]
+            );
+
+            $successMessage = 'User transferred successfully from "' . ($oldAgencyName ?? 'None') . '" to "' . $newAgency->agency_name . '".';
+            if ($adminSwapped) {
+                $successMessage .= ' Admin exchange completed - both admins have been notified.';
+            }
+
+            return redirect()->back()->with('success', $successMessage);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while transferring the user: ' . $e->getMessage()]);
+        }
     }
 }
 
