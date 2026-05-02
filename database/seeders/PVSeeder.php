@@ -39,13 +39,50 @@ class PVSeeder extends Seeder
             return;
         }
 
-        // Realistic shop names list
-        $shopNames = [
-            'Sports Cafe', 'Home Restaurant', 'Star Cinema', 'Fashion Store', 'Oasis Hotel', 'Internet Cafe',
-            'Eastern Restaurant', 'University Cafe', 'Supermarket', 'Electronics Store', 'Beauty Salon', 'Fast Food',
-            'Science Bookstore', 'Game Store', 'Turkish Restaurant', 'European Cafe', 'Health Pharmacy', 'Clothing Store',
-            'Italian Restaurant', 'Literary Cafe', 'Phone Store', 'Chinese Restaurant', 'Music Cafe', 'Bookstore',
-            'Lebanese Restaurant', 'Art Cafe', 'Sports Store', 'Mediterranean Restaurant', 'Traditional Cafe', 'Gift Shop'
+        // Realistic Algerian business names grouped by shop type for believable PVs.
+        $shopNamesByType = [
+            'Restaurant'      => ['Restaurant La Casbah', 'Restaurant Dar Diaf', 'Restaurant El Djenina', 'Restaurant El Boustane', 'Restaurant Le Tantonville', 'Restaurant Tipaza Plage'],
+            'Coffee Shop'     => ['Café Malakoff', 'Café El Djazair', 'Café Le Tantonville', 'Café Les Palmiers', 'Café El Houria', 'Café La Perle'],
+            'Fast Food'       => ['Pizza Cosmos', 'Tacos El Harrach', 'Fast Food Sahara', 'Burger Alger', 'Snack Kheir'],
+            'Bakery'          => ['Pâtisserie Les Délices d\'Alger', 'Boulangerie El Baraka', 'Pâtisserie Ketchaoua', 'Boulangerie La Fleur'],
+            'Ice Cream Shop'  => ['Glacier Riviera Alger', 'Glacier El Wiam', 'Glacier Les Sablettes'],
+            'Bar'             => ['Bar Le Milk Bar', 'Bar de la Poste'],
+            'Cafeteria'       => ['Cafétéria Université Alger', 'Cafétéria ENP', 'Cafétéria El Kettani'],
+            'Cinema'          => ['Cinéma Cosmos', 'Cinéma Ibn Khaldoun', 'Cinéma Afrique', 'Cinéma Algeria', 'Cinéma Mouggar'],
+            'Theater'         => ['Théâtre National Mahieddine Bachtarzi', 'Théâtre Régional Kateb Yacine', 'Théâtre de Verdure Laadi Flici'],
+            'Concert Hall'    => ['Salle El Mouggar', 'Salle Ibn Zeydoun', 'Palais de la Culture Moufdi Zakaria', 'Coupole d\'Alger'],
+            'Nightclub'       => ['Club Le Sofitel', 'Club El Djazair Riviera'],
+            'Karaoke Bar'     => ['Karaoké Le Riad', 'Karaoké El Nour'],
+            'Amusement Park'  => ['Parc des Grands Vents', 'Parc de Loisirs Kherrouba'],
+            'Retail Store'    => ['Galeries Algériennes', 'Magasin El Nasr', 'Boutique Dar Diaf'],
+            'Supermarket'     => ['Supermarché Ardis', 'Supermarché UNO City', 'Supermarché Numidis', 'Supermarché El Hayat'],
+            'Pharmacy'        => ['Pharmacie El Shifa', 'Pharmacie Centrale Didouche Mourad', 'Pharmacie El Baraka'],
+            'Bookstore'       => ['Librairie du Tiers-Monde', 'Librairie Mauguin', 'Librairie El Ijtihad'],
+            'Clothing Store'  => ['Boutique Dar El Hanine', 'Boutique El Anissa', 'Boutique Prestige Alger'],
+            'Electronics Store' => ['Condor Store Alger-Centre', 'Stream System Bab Ezzouar', 'Starlight Électronique'],
+            'Jewelry Store'   => ['Bijouterie El Dzair', 'Bijouterie Dar El Dhahab', 'Bijouterie El Andalous'],
+            'Sporting Goods'  => ['Sportland Alger', 'Décathlon Dar El Beida', 'Sport Pro Hussein Dey'],
+            'Hotel'           => ['Hôtel El Djazair (ex-Saint-George)', 'Hôtel El Aurassi', 'Hôtel Sofitel Alger', 'Hôtel Albert 1er', 'Hôtel Sheraton Club des Pins'],
+            'Internet Cafe'   => ['Cyber Café El Harrach', 'Cyber Espace Bab Ezzouar', 'Cyber Centre El Biar'],
+            'Game Center'     => ['Game Zone Bab Ezzouar', 'Arcade El Djazair', 'Play Station Lounge Alger'],
+            'Beauty Salon'    => ['Salon de Coiffure Sabrina', 'Institut de Beauté Yasmine', 'Salon El Anissa'],
+            'Gym'             => ['Salle de Sport Atlas Fitness', 'Fitness Club El Mouradia', 'Gym Pro Alger'],
+            'Laundry'         => ['Pressing Blanche-Neige', 'Laverie El Djenina'],
+            'Car Wash'        => ['Station de Lavage El Harrach', 'Auto Wash Bab El Oued'],
+            'Pet Store'       => ['Animalerie El Hayat', 'Pet Shop Alger'],
+            'Office'          => ['Cabinet d\'Architecture El Djazair', 'Bureau Notarial Didouche Mourad'],
+            'School'          => ['École Ibn Sina', 'Lycée Émir Abdelkader', 'École El Khawarizmi'],
+            'Hospital'        => ['Clinique Les Orangers', 'Clinique El Azhar'],
+            'Bank'            => ['Agence BEA Didouche Mourad', 'Agence BNA Bab Ezzouar', 'Agence CPA Alger-Centre'],
+            'Post Office'     => ['Bureau de Poste Grande Poste d\'Alger', 'Bureau de Poste El Harrach'],
+            'Gas Station'     => ['Station Naftal Bab Ezzouar', 'Station Sonatrach Alger-Centre'],
+            'Auto Repair'     => ['Garage El Djazair', 'Mécanique Bab El Oued'],
+        ];
+
+        $genericShopNames = [
+            'Café El Houria', 'Restaurant El Djenina', 'Librairie Mauguin', 'Supermarché Numidis',
+            'Hôtel El Aurassi', 'Cyber Centre El Biar', 'Pharmacie El Shifa', 'Boutique Dar El Hanine',
+            'Cinéma Mouggar', 'Salle Ibn Zeydoun',
         ];
 
         foreach ($agents as $agent) {
@@ -56,14 +93,8 @@ class PVSeeder extends Seeder
                 $paymentMethods = ['CASH', 'CHEQUE'];
                 $statuses = ['OPEN', 'CLOSED', 'PENDING'];
 
-                $shopName = $shopNames[array_rand($shopNames)] . ' - ' . $agent->user->name;
-                $status = $statuses[array_rand($statuses)];
-                $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
-                $paymentStatus = $status === 'CLOSED' ? (rand(0, 1) ? 'VALIDATED' : 'PENDING') : 'PENDING';
-
-                // Select random shop type from database
                 $randomShopType = ShopType::inRandomOrder()->first();
-                
+
                 if (!$randomShopType) {
                     continue;
                 }
@@ -72,20 +103,29 @@ class PVSeeder extends Seeder
                     continue;
                 }
 
+                $pool = $shopNamesByType[$randomShopType->name] ?? $genericShopNames;
+                $shopName = $pool[array_rand($pool)];
+                $status = $statuses[array_rand($statuses)];
+                $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
+                $paymentStatus = $status === 'CLOSED' ? (rand(0, 1) ? 'VALIDATED' : 'PENDING') : 'PENDING';
+
                 $gestionnaire = User::where('agency_id', $agent->agency_id)
                     ->whereHas('roles', function ($query) {
                         $query->where('name', 'gestionnaire');
                     })
                     ->first();
 
+                $wilaya = $agent->user->agency->wilaya;
+                $locationText = $shopName . ', ' . $wilaya;
+
                 $mission = Mission::create([
                     'agency_id' => $agent->agency_id,
                     'gestionnaire_id' => $gestionnaire?->id ?? $agent->user_id,
                     'agent_id' => $agent->id,
-                    'title' => 'Inspection #' . $pvNum . ' for ' . $agent->user->name,
-                    'description' => 'Auto-generated mission for testing data',
-                    'location_text' => $shopName . ' - ' . $randomShopType->name,
-                    'map_link' => 'https://maps.google.com/?q=' . urlencode($agent->user->agency->wilaya),
+                    'title' => 'Contrôle des droits d\'auteur - ' . $shopName,
+                    'description' => 'Mission de contrôle de la diffusion d\'œuvres artistiques au sein de l\'établissement ' . $shopName . ' (' . $randomShopType->name . '), wilaya de ' . $wilaya . '.',
+                    'location_text' => $locationText,
+                    'map_link' => 'https://maps.google.com/?q=' . urlencode($locationText),
                     'scheduled_at' => now()->addDays($pvNum),
                     'status' => $status === 'OPEN' ? 'IN_PROGRESS' : 'DONE',
                 ]);
