@@ -1,84 +1,51 @@
 <x-allthepages-layout pageTitle="Complaint Details">
-    <div style="padding: 5px; margin: 5px;">
-        <div style="margin-bottom: 1.5rem;">
-            <a href="{{ route('superadmin.complaints.index') }}" style="padding: 10px 20px; background-color: #193948; color: #4FADC0; border-radius: 0.5rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                ← Back to Complaints
-            </a>
-        </div>
+    <div style="padding: 1rem;">
+        <a href="{{ route('superadmin.complaints.index') }}" style="display:inline-block; margin-bottom:1rem; padding:0.5rem 0.9rem; border:2px solid #193948; border-radius:10px; text-decoration:none; color:#193948; font-weight:700; background:#fff;">Back</a>
 
-        <div class="page-container" style="margin-bottom: 1.5rem;">
-            <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 15px; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 3px solid #D6BFBF;">
-                <div style="flex: 1;">
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <span style="padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; background-color: {{ $message->type === 'COMPLAINT' ? '#E76268' : '#10b981' }}; color: white;">
-                            {{ $message->type === 'COMPLAINT' ? '⚠️ Complaint' : '📊 Report' }}
-                        </span>
-                        <span style="padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; background-color: 
-                            @if($message->status === 'PENDING') #f59e0b 
-                            @elseif($message->status === 'RESOLVED') #10b981 
-                            @else #6366f1 @endif; color: white;">
-                            {{ str_replace('_', ' ', $message->status) }}
-                        </span>
+        <div class="stat-card" style="padding: 1rem;">
+            <div style="display:flex; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem; border-bottom:2px solid #D6BFBF; padding-bottom:0.8rem;">
+                <div>
+                    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.45rem;">
+                        <span style="padding:0.24rem 0.58rem; border-radius:999px; font-size:0.76rem; font-weight:700; color:#fff; background:{{ $message->type === 'COMPLAINT' ? '#E76268' : '#10b981' }};">{{ $message->type === 'COMPLAINT' ? 'Complaint' : 'Report' }}</span>
+                        <span style="padding:0.24rem 0.58rem; border-radius:999px; font-size:0.76rem; font-weight:700; color:#fff; background:@if($message->status === 'PENDING') #f59e0b @elseif($message->status === 'RESOLVED') #10b981 @else #6366f1 @endif;">{{ str_replace('_', ' ', $message->status) }}</span>
                     </div>
-                    <h1 style="color: #193948; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">{{ $message->subject }}</h1>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; color: #193948; opacity: 0.8;">
-                        <span>From: <strong>{{ $message->sender?->name ?? ucfirst($message->sender_role ?? 'Unknown') }}</strong></span>
-                        <span>•</span>
-                        <span>Date: {{ $message->created_at->format('Y-m-d H:i') }}</span>
-                    </div>
+                    <h2 style="margin:0; color:#193948;">{{ $message->subject }}</h2>
+                    <p style="margin:0.35rem 0 0; color:#36454f; font-size:0.9rem;">From {{ $message->sender?->name ?? ucfirst($message->sender_role ?? 'Unknown') }} • {{ $message->created_at->format('Y-m-d H:i') }}</p>
                 </div>
             </div>
 
-            <!-- Message Content -->
-            <div style="margin-bottom: 1.5rem;">
-                <h3 style="color: #193948; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.1rem;">💬 Message:</h3>
-                <div style="background-color: white; border: 2px solid #193948; border-radius: 0.5rem; padding: 1.5rem;">
-                    <p style="color: #193948; white-space: pre-wrap; margin: 0; line-height: 1.6;">{{ $message->message }}</p>
-                </div>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Message</label>
+                <div style="background:#fff; border:2px solid #193948; border-radius:10px; padding:0.85rem; color:#193948; white-space:pre-wrap;">{{ $message->message }}</div>
             </div>
 
-            <!-- Images -->
             @if($message->images && count($message->images) > 0)
-                <div style="margin-bottom: 1.5rem;">
-                    <h3 style="color: #193948; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.1rem;">📷 Attachments:</h3>
-                    <div style="background-color: white; border: 2px solid #193948; border-radius: 0.5rem; padding: 1rem;">
-                        @include('blades.partials.complaint-gallery', [
-                            'galleryId' => 'complaint-' . $message->id,
-                            'images' => $message->images
-                        ])
-                    </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Attachments</label>
+                    @include('blades.partials.complaint-gallery', [
+                        'galleryId' => 'complaint-' . $message->id,
+                        'images' => $message->images
+                    ])
                 </div>
             @endif
 
-            <!-- Location -->
             @if($message->location_link)
-                <div style="margin-bottom: 1.5rem;">
-                    <h3 style="color: #193948; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.1rem;">📍 Location:</h3>
-                    <a href="{{ $message->location_link }}" target="_blank" style="padding: 10px 20px; background-color: #10b981; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                        🗺️ Open Location
-                    </a>
+                <div style="margin-bottom:1rem;">
+                    <a href="{{ $message->location_link }}" target="_blank" style="display:inline-block; padding:0.45rem 0.8rem; border-radius:10px; text-decoration:none; background:#193948; color:#4FADC0; font-weight:700;">Open Location</a>
                 </div>
             @endif
 
-            <!-- Response Section -->
             @php
-                $responseField = 'super_admin_response';
-                $responseImagesField = 'super_admin_response_images';
-                $responseValue = $message->{$responseField};
-                $responseImages = $message->{$responseImagesField} ?? [];
+                $responseValue = $message->super_admin_response;
+                $responseImages = $message->super_admin_response_images ?? [];
             @endphp
 
             @if($responseValue)
-                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 3px solid #D6BFBF;">
-                    <h3 style="color: #193948; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">✅ Response:</h3>
-                    <div style="background-color: #D1FAE5; border: 2px solid #10b981; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem;">
-                        <p style="color: #193948; white-space: pre-wrap; margin: 0; line-height: 1.6;">{{ $responseValue }}</p>
-                    </div>
-
+                <div style="margin-top:1.2rem; padding-top:1rem; border-top:2px solid #D6BFBF;">
+                    <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Super Admin Response</label>
+                    <div style="background:#D1FAE5; border:2px solid #10b981; border-radius:10px; padding:0.85rem; color:#193948; white-space:pre-wrap;">{{ $responseValue }}</div>
                     @if(is_array($responseImages) && count($responseImages) > 0)
-                        <div style="background-color: white; border: 2px solid #193948; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem;">
-                            <h4 style="color: #193948; font-weight: 600; margin-bottom: 1rem;">Response Images:</h4>
+                        <div style="margin-top:0.8rem;">
                             @include('blades.partials.complaint-gallery', [
                                 'galleryId' => 'response-' . $message->id,
                                 'images' => $responseImages
@@ -87,30 +54,20 @@
                     @endif
                 </div>
             @else
-                <!-- Response Form -->
-                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 3px solid #D6BFBF;">
-                    <h3 style="color: #193948; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">✍️ Respond to Complaint:</h3>
-                    <form action="{{ route('superadmin.complaints.respond', $message->id) }}" method="POST" enctype="multipart/form-data" style="background-color: #F3EBDD; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid #193948;">
+                <div style="margin-top:1.2rem; padding-top:1rem; border-top:2px solid #D6BFBF;">
+                    <form action="{{ route('superadmin.complaints.respond', $message->id) }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0.75rem;">
                         @csrf
-                        <div style="margin-bottom: 1rem;">
-                            <label style="display: block; color: #193948; font-weight: 700; margin-bottom: 0.5rem;">Your Response *</label>
-                            <textarea name="super_admin_response" rows="6" required style="width: 100%; padding: 0.75rem; border: 2px solid #193948; border-radius: 0.5rem; color: #193948; font-size: 1rem; background-color: white; resize: vertical;"></textarea>
+                        <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.45rem;">Write Response</label>
+                        <textarea name="super_admin_response" rows="5" required style="width:100%; padding:0.75rem; border:2px solid #193948; border-radius:10px; color:#193948; background:#fff; resize:vertical;"></textarea>
+                        <label style="display:block; color:#193948; font-weight:700; margin:0.7rem 0 0.4rem;">Response Images (Optional)</label>
+                        <input type="file" name="super_admin_response_images[]" multiple accept="image/*" style="width:100%; padding:0.65rem; border:2px solid #193948; border-radius:10px; background:#fff;">
+                        <div style="margin-top:0.75rem;">
+                            <button type="submit" style="padding:0.55rem 0.95rem; border:none; border-radius:10px; background:#10b981; color:#fff; font-weight:700; cursor:pointer;">Send Response</button>
                         </div>
-                        <div style="margin-bottom: 1rem;">
-                            <label style="display: block; color: #193948; font-weight: 700; margin-bottom: 0.5rem;">Response Images (Optional, Max 5)</label>
-                            <input type="file" name="super_admin_response_images[]" multiple accept="image/*" style="width: 100%; padding: 0.75rem; border: 2px solid #193948; border-radius: 0.5rem; background-color: white;">
-                        </div>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button type="submit" style="padding: 12px 24px; background-color: #10b981; color: white; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-                                ✅ Send Response
-                            </button>
-                            <form action="{{ route('superadmin.complaints.resolve', $message->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                <button type="submit" style="padding: 12px 24px; background-color: #6366f1; color: white; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer;">
-                                    ✅ Mark as Resolved
-                                </button>
-                            </form>
-                        </div>
+                    </form>
+                    <form action="{{ route('superadmin.complaints.resolve', $message->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" style="padding:0.55rem 0.95rem; border:none; border-radius:10px; background:#6366f1; color:#fff; font-weight:700; cursor:pointer;">Mark as Resolved</button>
                     </form>
                 </div>
             @endif

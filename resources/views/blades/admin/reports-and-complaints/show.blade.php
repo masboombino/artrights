@@ -1,9 +1,9 @@
 <x-allthepages-layout pageTitle="View Complaint">
-    <div class="space-y-6">
-        <div class="rounded-lg shadow-lg p-6" style="background-color: #F3EBDD; border: 3px solid #193948; border-radius: 20px;">
+    <div style="padding: 1rem;">
+        <div class="stat-card" style="padding: 1rem;">
             <!-- Complaint Details -->
             <div class="mb-6">
-                <h2 class="text-2xl font-bold mb-4" style="color: #D6BFBF;">Complaint Details</h2>
+                <h2 class="text-2xl font-bold mb-4" style="color: #193948;">Complaint Details</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     @if($complaint->artist)
@@ -134,7 +134,7 @@
                         </div>
 
                         <div class="flex gap-4">
-                            <button type="submit" class="rounded-lg shadow-lg transition hover:opacity-90" style="background-color: #D6BFBF; color: #193948; padding: 0.75rem 1.5rem; font-weight: 600;">
+                            <button type="submit" class="rounded-lg shadow-lg transition hover:opacity-90" style="background-color: #193948; color: #4FADC0; padding: 0.75rem 1.5rem; font-weight: 600;">
                                 Send Response
                             </button>
                             <a href="{{ route('admin.complaints.index') }}" class="rounded-lg shadow-lg transition hover:opacity-90" style="background-color: #36454f; color: #4FADC0; padding: 0.75rem 1.5rem; font-weight: 600;">

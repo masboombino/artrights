@@ -142,14 +142,14 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 0.85rem;
+            margin-bottom: 1rem;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #F3EBDD 0%, #e8ddd0 100%);
             border-radius: 1rem;
-            padding: 1.25rem;
+            padding: 1rem 1.1rem;
             box-shadow: 0 4px 16px rgba(25, 57, 72, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -157,6 +157,7 @@
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
             border: 2px solid transparent;
+            text-align: left;
         }
 
         .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -193,14 +194,15 @@
         }
 
         .stat-card-icon {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 0.75rem;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.35rem;
+            margin: 0 0.55rem 0.35rem 0;
+            vertical-align: middle;
             background: linear-gradient(135deg, #193948 0%, #2a4a5a 100%);
             box-shadow: 0 4px 12px rgba(25, 57, 72, 0.3);
             transition: all 0.3s ease;
@@ -215,37 +217,39 @@
             font-size: 0.875rem;
             font-weight: 600;
             color: #193948;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.35rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             opacity: 0.8;
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            vertical-align: middle;
         }
 
         .stat-card-value {
-            font-size: 2.25rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #193948;
-            margin: 0.5rem 0;
+            margin: 0.3rem 0;
             line-height: 1;
             text-shadow: 1px 1px 2px rgba(25, 57, 72, 0.1);
+            text-align: right;
+            width: 100%;
         }
 
         .stat-card-description {
-            font-size: 0.8rem;
-            color: #193948;
-            opacity: 0.7;
-            margin-top: 0.25rem;
-            font-weight: 500;
+            display: none;
         }
 
         .stat-card-footer {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
+            margin-top: 0.35rem;
+            padding-top: 0.45rem;
             border-top: 1px solid rgba(25, 57, 72, 0.1);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #193948;
             opacity: 0.6;
         }
@@ -394,7 +398,7 @@
         .wallet-card {
             background: linear-gradient(135deg, #4FADC0 0%, #3a8fa0 100%);
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 1rem;
             box-shadow: 0 8px 24px rgba(79, 173, 192, 0.3);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -426,43 +430,42 @@
         }
 
         .wallet-card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.9rem;
+            margin-bottom: 0.45rem;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
 
         .wallet-card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #F3EBDD;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.35rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .wallet-card-amount {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #F3EBDD;
-            margin: 0.5rem 0;
+            margin: 0.2rem 0 0.45rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: right;
+            width: 100%;
         }
 
         .wallet-card-label {
-            font-size: 0.875rem;
-            color: #D6BFBF;
-            margin-bottom: 1rem;
-            opacity: 0.9;
+            display: none;
         }
 
         .wallet-card-button {
             display: inline-block;
             background: linear-gradient(135deg, #F3EBDD 0%, #e8ddd0 100%);
             color: #193948;
-            padding: 0.625rem 1.5rem;
+            padding: 0.45rem 1rem;
             border-radius: 0.75rem;
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(25, 57, 72, 0.2);
         }
@@ -476,7 +479,7 @@
         .complaints-card {
             background: linear-gradient(135deg, #F3EBDD 0%, #e8ddd0 100%);
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 1rem;
             box-shadow: 0 8px 24px rgba(25, 57, 72, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -512,43 +515,42 @@
         }
 
         .complaints-card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.9rem;
+            margin-bottom: 0.45rem;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
 
         .complaints-card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #193948;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.35rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .complaints-card-amount {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #193948;
-            margin: 0.5rem 0;
+            margin: 0.2rem 0 0.45rem;
             text-shadow: 2px 2px 4px rgba(25, 57, 72, 0.1);
+            text-align: right;
+            width: 100%;
         }
 
         .complaints-card-label {
-            font-size: 0.875rem;
-            color: #193948;
-            margin-bottom: 1rem;
-            opacity: 0.7;
+            display: none;
         }
 
         .complaints-card-button {
             display: inline-block;
             background: linear-gradient(135deg, #193948 0%, #2a4a5a 100%);
             color: #F3EBDD;
-            padding: 0.625rem 1.5rem;
+            padding: 0.45rem 1rem;
             border-radius: 0.75rem;
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(25, 57, 72, 0.2);
             margin-top: auto;
@@ -586,15 +588,15 @@
 
             .stats-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1rem;
+                gap: 0.8rem;
             }
 
             .stat-card {
-                padding: 1.5rem;
+                padding: 0.95rem;
             }
 
             .stat-card-value {
-                font-size: 2.5rem;
+                font-size: 1.95rem;
             }
 
             .action-buttons {
@@ -610,11 +612,11 @@
             }
 
             .wallet-card {
-                padding: 2rem;
+                padding: 0.95rem;
             }
 
             .wallet-card-amount {
-                font-size: 2.5rem;
+                font-size: 1.8rem;
             }
         }
 
@@ -766,7 +768,7 @@
             <a href="{{ route('help') }}" class="stat-card clickable" style="text-decoration: none;">
                 <div class="stat-card-icon">❓</div>
                 <div class="stat-card-title">Help</div>
-                <div class="stat-card-value" style="font-size: 1.75rem;">💡</div>
+                <div class="stat-card-value" style="font-size: 1.75rem; text-align: left; width: auto;">💡</div>
                 <div class="stat-card-description">If you need an explanation of how the site works</div>
                 <div class="stat-card-footer">
                     <span>→</span>
@@ -777,7 +779,7 @@
             <a href="{{ route('artist.law') }}" class="stat-card clickable" style="text-decoration: none;">
                 <div class="stat-card-icon">⚖️</div>
                 <div class="stat-card-title">Legal Reference</div>
-                <div class="stat-card-value" style="font-size: 1.75rem;">📚</div>
+                <div class="stat-card-value" style="font-size: 1.75rem; text-align: left; width: auto;">📚</div>
                 <div class="stat-card-description">Learn about your rights</div>
                 <div class="stat-card-footer">
                     <span>→</span>

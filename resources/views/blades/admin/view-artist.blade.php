@@ -91,9 +91,9 @@
 
                                 <div id="bank-proof-{{ $artist->id }}" class="identity-lightbox">
                                     <button type="button" class="lightbox-close-btn" onclick="closeIdentityLightbox('bank-proof-{{ $artist->id }}')">&times;</button>
-                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-left" onclick="rotateIdentityImage('bank-proof-{{ $artist->id }}', -90)">↺</button>
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-left" onclick="rotateIdentityImage('lightbox-img-bank-proof-{{ $artist->id }}', -90)">↺</button>
                                     <img id="lightbox-img-bank-proof-{{ $artist->id }}" src="" alt="Bank Account Proof Preview" style="transform: rotate(0deg);">
-                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-right" onclick="rotateIdentityImage('bank-proof-{{ $artist->id }}', 90)">↻</button>
+                                    <button type="button" class="lightbox-rotate-btn lightbox-rotate-right" onclick="rotateIdentityImage('lightbox-img-bank-proof-{{ $artist->id }}', 90)">↻</button>
                                 </div>
                             @else
                                 <div class="p-4 rounded-lg" style="background-color: #ffffff; border: 2px solid #193948; border-radius: 12px;">

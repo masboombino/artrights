@@ -860,11 +860,13 @@ class AgentController extends Controller
             if ($remainingAmount > 0) {
                 return redirect()
                     ->back()
-                    ->withErrors(['pv' => 'Cannot close PV: Payment is incomplete. Amount received: ' . number_format($receivedAmount, 2) . ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD. Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD.']);
+                    ->withErrors(['pv' => 'Cannot close PV: Payment is incomplete. Amount received: ' . number_format($receivedAmount, 2) .
+                     ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD. Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD.']);
             } else {
                 return redirect()
                     ->back()
-                    ->withErrors(['pv' => 'Cannot close PV: Payment amount exceeds required amount. Amount received: ' . number_format($receivedAmount, 2) . ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD.']);
+                    ->withErrors(['pv' => 'Cannot close PV: Payment amount exceeds required amount. Amount received: ' . number_format($receivedAmount, 2) .
+                     ' DZD, Total required: ' . number_format($totalAmount, 2) . ' DZD.']);
             }
         }
 
@@ -928,14 +930,17 @@ class AgentController extends Controller
                     // Payment is more than required
                     return redirect()
                         ->back()
-                        ->withErrors(['cash_received_amount' => 'Cannot complete operation: Amount paid (' . number_format($receivedAmount, 2) . ' DZD) exceeds required amount (' . number_format($totalAmount, 2) . ' DZD). Excess: ' . number_format($difference, 2) . ' DZD.'])
+                        ->withErrors(['cash_received_amount' => 'Cannot complete operation: Amount paid (' . number_format($receivedAmount, 2) .
+                         ' DZD) exceeds required amount (' . number_format($totalAmount, 2) . ' DZD). Excess: ' . number_format($difference, 2) . ' DZD.'])
                         ->withInput();
                 } else {
                     // Payment is less than required
                     $remainingAmount = abs($difference);
                     return redirect()
                         ->back()
-                        ->withErrors(['cash_received_amount' => 'Cannot confirm payment: Amount paid (' . number_format($receivedAmount, 2) . ' DZD) is less than required amount (' . number_format($totalAmount, 2) . ' DZD). Remaining amount: ' . number_format($remainingAmount, 2) . ' DZD. Please collect the full amount before confirming.'])
+                        ->withErrors(['cash_received_amount' => 'Cannot confirm payment: Amount paid (' . number_format($receivedAmount, 2) .
+                         ' DZD) is less than required amount (' . number_format($totalAmount, 2) . ' DZD). Remaining amount: ' . number_format($remainingAmount, 2) .
+                          ' DZD. Please collect the full amount before confirming.'])
                         ->withInput();
                 }
             }

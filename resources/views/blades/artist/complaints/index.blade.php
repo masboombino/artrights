@@ -76,15 +76,7 @@
         }
 
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #E76268 0%, #D6BFBF 50%, #4FADC0 100%);
-            background-size: 200% 100%;
-            animation: shimmer 3s infinite;
+            display: none;
         }
 
         .stat-card:hover {
@@ -190,7 +182,7 @@
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #E76268 0%, #d4555a 100%);
+            background: #a7444a;
             color: white;
             padding: 1.125rem 2.5rem;
             border-radius: 16px;
@@ -202,7 +194,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            box-shadow: 0 8px 24px rgba(231, 98, 104, 0.3);
+            box-shadow: 0 8px 24px rgba(25, 57, 72, 0.25);
             position: relative;
             overflow: hidden;
         }
@@ -227,8 +219,9 @@
 
         .btn-submit:hover {
             transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 12px 32px rgba(231, 98, 104, 0.4);
-            border-color: #c45056;
+            box-shadow: 0 12px 32px rgba(25, 57, 72, 0.35);
+            border-color: #193948;
+            background: #8f3a40;
         }
 
         .btn-submit span {
@@ -495,7 +488,7 @@
         }
 
         .btn-delete {
-            background: linear-gradient(135deg, #E76268 0%, #d4555a 100%);
+            background: #9f4046;
             color: white;
             padding: 0.875rem 2rem;
             border-radius: 14px;
@@ -504,7 +497,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 6px 20px rgba(231, 98, 104, 0.25);
+            box-shadow: 0 6px 20px rgba(25, 57, 72, 0.25);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -512,8 +505,9 @@
 
         .btn-delete:hover {
             transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 28px rgba(231, 98, 104, 0.4);
-            border-color: #c45056;
+            box-shadow: 0 10px 28px rgba(25, 57, 72, 0.35);
+            border-color: #193948;
+            background: #86363b;
         }
 
         .empty-state {

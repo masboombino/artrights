@@ -93,6 +93,11 @@ class ArtistController extends Controller
                         'status' => $artist->status,
                         'bank_account_number' => $artist->bank_account_number,
                         'full_name_on_account' => $artist->full_name_on_account,
+                        'bank_account_proof_url' => $artist->bank_account_proof ? '/api/media/' . ltrim($artist->bank_account_proof, '/') : null,
+                        'identity_document_url' => $artist->identity_document ? '/api/media/' . ltrim($artist->identity_document, '/') : null,
+                        'is_bank_profile_complete' => !empty($artist->bank_account_number)
+                            && !empty($artist->full_name_on_account)
+                            && !empty($artist->bank_account_proof),
                         'agency_name' => $artist->agency ? $artist->agency->agency_name : 'Not Assigned',
                         'wilaya' => $artist->agency ? $artist->agency->wilaya : 'Not Assigned',
                     ],
@@ -250,6 +255,11 @@ class ArtistController extends Controller
                     'birth_place' => $artist->birth_place,
                     'bank_account_number' => $artist->bank_account_number,
                     'full_name_on_account' => $artist->full_name_on_account,
+                    'bank_account_proof_url' => $artist->bank_account_proof ? '/api/media/' . ltrim($artist->bank_account_proof, '/') : null,
+                    'identity_document_url' => $artist->identity_document ? '/api/media/' . ltrim($artist->identity_document, '/') : null,
+                    'is_bank_profile_complete' => !empty($artist->bank_account_number)
+                        && !empty($artist->full_name_on_account)
+                        && !empty($artist->bank_account_proof),
                     'agency_name' => $artist->agency ? $artist->agency->agency_name : 'Not Assigned',
                     'wilaya' => $artist->agency ? $artist->agency->wilaya : 'Not Assigned',
                 ],
@@ -350,56 +360,71 @@ class ArtistController extends Controller
 
     public function createArtwork(Request $request)
     {
-        $artist = Auth::user()->artist;
+        try {
+            $artist = Auth::user()->artist;
 
-        if (!$artist) {
+            if (!$artist) {
+                return response()->json([
+                    'message' => 'Artist profile not found',
+                ], 404);
+            }
+
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+                'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,mp3,mp4',
+            ]);
+
+            $filePath = null;
+            if ($request->hasFile('file')) {
+                $filePath = $request->file('file')->store('artworks', 'public');
+            }
+
+            $categoryId = (int) $request->category_id;
+
+            $artwork = Artwork::create([
+                'artist_id' => $artist->id,
+                'category_id' => $categoryId,
+                'title' => $request->title,
+                'description' => $request->description,
+                'file_path' => $filePath,
+                'status' => 'PENDING',
+                'platform_tax_status' => 'PENDING',
+                'platform_tax_amount' => Artwork::calculatePlatformTax($categoryId),
+            ]);
+
+            NotificationService::sendToAgencyRole(
+                'gestionnaire',
+                $artist->agency_id,
+                'New artwork submitted',
+                Auth::user()->name . ' uploaded "' . $request->title . '" for review.',
+                [
+                    'type' => 'artwork_submitted',
+                    'artwork_id' => $artwork->id,
+                ]
+            );
+
             return response()->json([
-                'message' => 'Artist profile not found',
-            ], 404);
+                'message' => 'Artwork created successfully and pending approval',
+                'artwork' => [
+                    'id' => $artwork->id,
+                    'title' => $artwork->title,
+                    'status' => $artwork->status,
+                ],
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::error('API createArtwork failed', [
+                'artist_id' => Auth::id(),
+                'payload' => $request->except(['file']),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to create artwork: ' . $e->getMessage(),
+            ], 500);
         }
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,mp3,mp4',
-        ]);
-
-        $filePath = null;
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('artworks', 'public');
-        }
-
-        $artwork = Artwork::create([
-            'artist_id' => $artist->id,
-            'category_id' => $request->category_id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'file_path' => $filePath,
-            'status' => 'PENDING',
-            'platform_tax_status' => 'PENDING',
-            'platform_tax_amount' => Artwork::calculatePlatformTax($request->category_id),
-        ]);
-
-        NotificationService::sendToAgencyRole(
-            'gestionnaire',
-            $artist->agency_id,
-            'New artwork submitted',
-            Auth::user()->name . ' uploaded "' . $request->title . '" for review.',
-            [
-                'type' => 'artwork_submitted',
-                'artwork_id' => $artwork->id,
-            ]
-        );
-
-        return response()->json([
-            'message' => 'Artwork created successfully and pending approval',
-            'artwork' => [
-                'id' => $artwork->id,
-                'title' => $artwork->title,
-                'status' => $artwork->status,
-            ],
-        ], 201);
     }
 
     public function updateArtwork(Request $request, $id)
@@ -663,11 +688,15 @@ class ArtistController extends Controller
             ], 404);
         }
 
-        // Check if artist has bank account information
-        if (!$artist->bank_account_number || !$artist->full_name_on_account) {
+        // Ensure full bank profile exists before allowing wallet recharge
+        if (
+            empty($artist->bank_account_number)
+            || empty($artist->full_name_on_account)
+            || empty($artist->bank_account_proof)
+        ) {
             return response()->json([
                 'success' => false,
-                'message' => 'You must add your bank account information before recharging your wallet. Please update your profile with your bank account number and full name on account.',
+                'message' => 'You must complete your bank account profile before recharging your wallet (account number, full name on account, and proof document).',
             ], 400);
         }
 

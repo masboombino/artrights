@@ -1,56 +1,47 @@
 <x-allthepages-layout pageTitle="{{ $complaint->type === 'REPORT' ? 'Report Details' : 'Complaint Details' }}">
-    <div class="space-y-6" style="padding: 1rem;">
+    <div style="padding: 1rem;">
         @if(session('success'))
             <div class="p-4 rounded mb-4" style="background-color: #D1FAE5; color: #193948; border: 2px solid #10b981;">
                 {{ session('success') }}
             </div>
         @endif
 
-        <div class="rounded-lg shadow-lg p-6" style="background-color: #F3EBDD; border: 3px solid #193948; max-width: 900px; margin: 0 auto;">
-            <div class="mb-6">
-                <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-                    <div>
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.5rem;">
-                            <span class="px-3 py-1 text-xs font-semibold rounded" style="background-color: {{ $complaint->type === 'COMPLAINT' ? '#E76268' : '#10b981' }}; color: white;">
-                                {{ $complaint->type === 'COMPLAINT' ? '⚠️ Complaint' : '📊 Report' }}
-                            </span>
-                            <h2 class="text-2xl font-bold" style="color: #193948; margin: 0;">{{ $complaint->subject }}</h2>
-                        </div>
-                        <p class="text-sm" style="color: #36454f; margin-top: 0.5rem;">To: {{ ucfirst($complaint->target_role ?? 'admin') }}</p>
-                        @if($complaint->targetUser)
-                            <p class="text-sm" style="color: #36454f;">{{ $complaint->targetUser->name }}</p>
-                        @endif
-                    </div>
-                    <span class="px-4 py-2 rounded text-sm font-bold" style="background-color: 
-                        @if($complaint->status === 'PENDING') #f59e0b 
-                        @elseif($complaint->status === 'RESOLVED') #10b981 
-                        @elseif($complaint->status === 'IN_PROGRESS') #6366f1 
-                        @else #193948 @endif; color: white;">
+        <div class="stat-card" style="padding: 1rem; max-width: 980px; margin: 0 auto;">
+            <div style="display:flex; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem;">
+                <div>
+                    <span style="display:inline-block; margin-bottom:0.45rem; padding:0.25rem 0.55rem; border-radius:999px; color:white; font-size:0.78rem; background:{{ $complaint->type === 'COMPLAINT' ? '#E76268' : '#10b981' }};">
+                        {{ $complaint->type === 'COMPLAINT' ? 'Complaint' : 'Report' }}
+                    </span>
+                    <h2 style="margin:0; color:#193948;">{{ $complaint->subject }}</h2>
+                    <p style="margin:0.45rem 0 0; color:#36454f; font-size:0.9rem;">
+                        To: {{ ucfirst($complaint->target_role ?? 'admin') }} {{ $complaint->targetUser ? ('- '.$complaint->targetUser->name) : '' }}
+                    </p>
+                    <p style="margin:0.2rem 0 0; color:#36454f; font-size:0.82rem;">Submitted: {{ $complaint->created_at->format('Y-m-d H:i') }}</p>
+                </div>
+                <div>
+                    <span style="padding:0.35rem 0.65rem; border-radius:999px; color:white; font-size:0.78rem; background:
+                    @if($complaint->status === 'PENDING') #f59e0b @elseif($complaint->status === 'RESOLVED') #10b981 @else #6366f1 @endif;">
                         {{ str_replace('_', ' ', $complaint->status) }}
                     </span>
                 </div>
-                <p class="text-xs" style="color: #36454f;">Submitted on {{ $complaint->created_at->format('Y-m-d H:i') }}</p>
             </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-bold mb-2" style="color: #193948;">Message</label>
-                <div class="p-4 rounded-lg" style="background-color: #ffffff; border: 2px solid #193948;">
-                    <p class="whitespace-pre-wrap" style="color: #36454f;">{{ $complaint->message }}</p>
-                </div>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Message</label>
+                <div style="background:white; border:2px solid #193948; border-radius:0.5rem; padding:0.9rem; color:#36454f; white-space:pre-wrap;">{{ $complaint->message }}</div>
             </div>
 
             @if($complaint->location_link)
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2" style="color: #193948;">Location</label>
-                    <a href="{{ $complaint->location_link }}" target="_blank" class="inline-block px-4 py-2 rounded" style="background-color: #193948; color: #4FADC0; text-decoration: none;">
-                        📍 Open Map
+                <div style="margin-bottom:1rem;">
+                    <a href="{{ $complaint->location_link }}" target="_blank" style="display:inline-block; padding:0.45rem 0.8rem; border-radius:0.45rem; text-decoration:none; background:#193948; color:#4FADC0; font-weight:700;">
+                        Open Location
                     </a>
                 </div>
             @endif
 
             @if($complaint->images && count($complaint->images) > 0)
-                <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2" style="color: #193948;">Attachments</label>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Attachments</label>
                     @include('blades.partials.complaint-gallery', [
                         'galleryId' => 'agent-item-'.$complaint->id,
                         'images' => $complaint->images
@@ -65,32 +56,27 @@
             @endphp
 
             @if($complaint->{$targetResponseField})
-                <div class="mb-6 pt-6" style="border-top: 2px solid rgba(25, 57, 72, 0.2);">
-                    <h3 class="text-lg font-bold mb-2" style="color: #193948;">{{ $targetResponseLabel }}</h3>
-                    <div class="p-4 rounded-lg mb-3" style="background-color: #ffffff; border: 2px solid #D6BFBF;">
-                        <p class="whitespace-pre-wrap" style="color: #36454f;">{{ $complaint->{$targetResponseField} }}</p>
-                    </div>
+                <div style="margin-top:1.2rem; border-top:2px solid rgba(25,57,72,0.2); padding-top:1rem;">
+                    <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">{{ $targetResponseLabel }}</label>
+                    <div style="background:white; border:2px solid #D6BFBF; border-radius:0.5rem; padding:0.9rem; color:#36454f; white-space:pre-wrap;">{{ $complaint->{$targetResponseField} }}</div>
                     @if(is_array($complaint->{$targetResponseImagesField}) && count($complaint->{$targetResponseImagesField}) > 0)
-                        <div class="mt-3">
-                            <label class="block text-sm font-bold mb-2" style="color: #193948;">Response Attachments</label>
+                        <div style="margin-top:0.8rem;">
+                            <label style="display:block; color:#193948; font-weight:700; margin-bottom:0.4rem;">Response Attachments</label>
                             @include('blades.partials.complaint-gallery', [
                                 'galleryId' => 'agent-target-response-'.$complaint->id,
                                 'images' => $complaint->{$targetResponseImagesField}
                             ])
                         </div>
                     @endif
-                    <p class="text-xs mt-2" style="color: #36454f;">Response date: {{ $complaint->updated_at->format('Y-m-d H:i') }}</p>
                 </div>
             @else
-                <div class="mb-6 pt-6" style="border-top: 2px dashed rgba(25, 57, 72, 0.2);">
-                    <p class="text-sm" style="color: #36454f; opacity: 0.7;">⏳ Waiting for {{ $complaint->target_role === 'gestionnaire' ? 'gestionnaire' : 'admin' }} response...</p>
+                <div style="margin-top:1.2rem; border-top:2px dashed rgba(25,57,72,0.2); padding-top:1rem; color:#36454f;">
+                    Waiting for {{ $complaint->target_role === 'gestionnaire' ? 'gestionnaire' : 'admin' }} response.
                 </div>
             @endif
 
-            <div class="mt-6">
-                <a href="{{ route('agent.complaints.index') }}" class="inline-block px-4 py-2 rounded font-semibold" style="background-color: #193948; color: #4FADC0; text-decoration: none;">
-                    ← Back to Reports and Complaints
-                </a>
+            <div style="margin-top:1.1rem;">
+                <a href="{{ route('agent.complaints.index') }}" style="display:inline-block; padding:0.45rem 0.8rem; border-radius:0.45rem; text-decoration:none; background:#193948; color:#4FADC0; font-weight:700;">Back</a>
             </div>
         </div>
     </div>

@@ -160,10 +160,14 @@ class ArtistController extends Controller
             return redirect()->route('login');
         }
 
-        // Check if artist has bank account information
-        if (!$artist->bank_account_number || !$artist->full_name_on_account) {
+        // Check if artist has complete bank account profile
+        if (
+            empty($artist->bank_account_number)
+            || empty($artist->full_name_on_account)
+            || empty($artist->bank_account_proof)
+        ) {
             return redirect()->route('artist.profile')
-                ->with('error', 'You must add your bank account information before recharging your wallet. Please update your profile with your bank account number and full name on account.');
+                ->with('error', 'You must complete your bank profile before recharging your wallet (account number, full name on account, and proof document).');
         }
 
         $request->validate([

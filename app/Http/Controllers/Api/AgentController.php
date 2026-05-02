@@ -124,6 +124,8 @@ class AgentController extends Controller
                         'badge_number' => $agent->badge_number,
                         'agency_name' => $agent->agency ? $agent->agency->agency_name : 'Not Assigned',
                         'wilaya' => $agent->agency ? $agent->agency->wilaya : 'Not Assigned',
+                        'agency_bank_account_number' => $agent->agency?->bank_account_number,
+                        'can_open_pv' => !empty($agent->agency?->bank_account_number),
                     ],
                 ],
             ]);
@@ -200,6 +202,8 @@ class AgentController extends Controller
                     'badge_number' => $agent->badge_number,
                     'agency_name' => $agent->agency ? $agent->agency->agency_name : 'Not Assigned',
                     'wilaya' => $agent->agency ? $agent->agency->wilaya : 'Not Assigned',
+                    'agency_bank_account_number' => $agent->agency?->bank_account_number,
+                    'can_open_pv' => !empty($agent->agency?->bank_account_number),
                 ],
             ],
         ]);
@@ -358,6 +362,7 @@ class AgentController extends Controller
         $pv = PV::with(['agency', 'mission', 'devices.deviceType', 'artworkUsages.artwork.artist.user'])
             ->where('agent_id', $agent->id)
             ->findOrFail($id);
+        $evidenceFiles = $pv->evidenceFiles();
 
         return response()->json([
             'pv' => [
@@ -370,6 +375,9 @@ class AgentController extends Controller
                 'payment_method' => $pv->payment_method,
                 'agent_payment_confirmed' => $pv->agent_payment_confirmed,
                 'agent_confirmed_at' => $pv->agent_confirmed_at,
+                'file_path' => $pv->file_path,
+                'evidence_files' => $evidenceFiles,
+                'evidence_files_count' => count($evidenceFiles),
                 'total_amount' => $pv->total_amount,
                 'cash_received_amount' => $pv->cash_received_amount,
                 'notes' => $pv->notes,
@@ -434,6 +442,15 @@ class AgentController extends Controller
             return response()->json([
                 'message' => 'Agent profile not found',
             ], 404);
+        }
+
+        // Keep API behavior aligned with web: agency bank account is required before opening PV
+        $agency = $agent->agency;
+        if (!$agency || empty($agency->bank_account_number)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your agency must have a bank account number before creating PVs. Please contact your admin or super admin to add the agency bank account information.',
+            ], 400);
         }
 
         $request->validate([
@@ -743,6 +760,22 @@ class AgentController extends Controller
         if ($pv->artworkUsages->isEmpty()) {
             $errors[] = 'PV must have at least one artwork usage before closing.';
         }
+
+        if (!$pv->agent_payment_confirmed) {
+            $errors[] = 'Agent payment confirmation is required before closing the PV.';
+        }
+
+        $totalAmount = (float) ($pv->total_amount ?? 0);
+        $receivedAmount = (float) ($pv->cash_received_amount ?? 0);
+        $difference = abs($receivedAmount - $totalAmount);
+
+        if ($difference > 0.01) {
+            $errors[] = 'Received amount must be exactly equal to PV total before closing. Received: '
+                . number_format($receivedAmount, 2, '.', '')
+                . ' DZD, Required: '
+                . number_format($totalAmount, 2, '.', '')
+                . ' DZD.';
+        }
         
         if (!empty($errors)) {
             return response()->json([
@@ -839,6 +872,20 @@ class AgentController extends Controller
 
         if (isset($data['cash_received_amount'])) {
             $pv->cash_received_amount = $data['cash_received_amount'];
+        }
+
+        $totalAmount = (float) ($pv->total_amount ?? 0);
+        $receivedAmount = (float) ($pv->cash_received_amount ?? 0);
+        $difference = abs($receivedAmount - $totalAmount);
+
+        // Strict rule: agent cannot confirm payment unless amount exactly matches PV total.
+        if ($pv->agent_payment_confirmed && $difference > 0.01) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment cannot be confirmed unless received amount exactly equals PV total. '
+                    . 'Received: ' . number_format($receivedAmount, 2, '.', '')
+                    . ' DZD, Required: ' . number_format($totalAmount, 2, '.', '') . ' DZD.',
+            ], 422);
         }
 
         $pv->save();

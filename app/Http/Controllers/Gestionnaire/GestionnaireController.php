@@ -693,6 +693,50 @@ class GestionnaireController extends Controller
         return view('blades.gestionnaire.complaints.index', compact('artistMessages', 'submitted', 'inbox', 'gestionnaire', 'type'));
     }
 
+    public function complaintsInbox(Request $request)
+    {
+        $gestionnaire = Auth::user();
+        $agencyId = $gestionnaire->agency_id;
+
+        $query = Complain::with(['agency', 'sender', 'admin', 'agentProfile.user', 'artist.user', 'artist.agency'])
+            ->where('target_role', 'gestionnaire')
+            ->where('type', Complain::TYPE_COMPLAINT)
+            ->notHiddenBy(Auth::id())
+            ->where(function ($q) use ($gestionnaire, $agencyId) {
+                $q->where('target_user_id', $gestionnaire->id)
+                    ->orWhere(function ($sub) use ($agencyId) {
+                        $sub->whereNull('target_user_id')->where('agency_id', $agencyId);
+                    });
+            });
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $items = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
+
+        return view('blades.gestionnaire.complaints.inbox', compact('items', 'gestionnaire'));
+    }
+
+    public function complaintsSent(Request $request)
+    {
+        $gestionnaire = Auth::user();
+
+        $query = Complain::with(['agency', 'admin', 'targetUser', 'sender'])
+            ->where('sender_user_id', $gestionnaire->id)
+            ->where('sender_role', 'gestionnaire')
+            ->where('type', Complain::TYPE_COMPLAINT)
+            ->notHiddenBy(Auth::id());
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $items = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
+
+        return view('blades.gestionnaire.complaints.sent', compact('items', 'gestionnaire'));
+    }
+
     public function showComplaint($id)
     {
         $gestionnaire = Auth::user();
@@ -845,6 +889,7 @@ class GestionnaireController extends Controller
         $agencyId = $gestionnaire->agency_id;
 
         $pv = PV::where('agency_id', $agencyId)
+            ->with(['mission.complaint.artist.user'])
             ->findOrFail($id);
 
         if (!$pv->canBeFinalized()) {
@@ -854,6 +899,34 @@ class GestionnaireController extends Controller
         $pv->finalized_at = now();
         $pv->finalized_by = $gestionnaire->id;
         $pv->save();
+
+        // If this PV came from a mission that came from a complaint/report,
+        // mark that complaint as resolved automatically on finalization.
+        $linkedComplaint = $pv->mission?->complaint;
+        if (!$linkedComplaint && $pv->mission_id) {
+            $linkedComplaint = Complain::where('mission_id', $pv->mission_id)->first();
+        }
+
+        if ($linkedComplaint && $linkedComplaint->status !== 'RESOLVED') {
+            $linkedComplaint->status = 'RESOLVED';
+            $linkedComplaint->responded_at = now();
+            $linkedComplaint->gestionnaire_id = $gestionnaire->id;
+            $linkedComplaint->save();
+
+            if ($linkedComplaint->artist && $linkedComplaint->artist->user) {
+                NotificationService::send(
+                    $linkedComplaint->artist->user,
+                    'Complaint resolved',
+                    'Your complaint "' . $linkedComplaint->subject . '" has been resolved after PV #' . $pv->id . ' finalization.',
+                    [
+                        'type' => 'complaint_resolved',
+                        'complaint_id' => $linkedComplaint->id,
+                        'pv_id' => $pv->id,
+                        'link' => route('artist.complaints.show', $linkedComplaint->id),
+                    ]
+                );
+            }
+        }
 
         if ($pv->agent && $pv->agent->user) {
             NotificationService::send(

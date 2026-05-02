@@ -118,7 +118,8 @@ class RegisteredUserController extends Controller
         $agency = Agency::find($request->agency_id);
         if (!$agency || !$agency->admin_id) {
             return redirect()->back()
-                ->withErrors(['agency_id' => 'Registration is currently unavailable for this agency as it does not have an assigned administrator. Please try again in a week or contact support.'])
+                ->withErrors(['agency_id' => 'Registration is currently unavailable for this agency as it does not have an assigned administrator.
+                 Please try again in a week or contact support.'])
                 ->withInput();
         }
 
@@ -181,6 +182,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('login')->with('status', '✅ Registration successful! Your account is pending admin approval. You will be able to access your account once an admin approves it.');
+        return redirect()->route('login')->with('status',
+         '✅ Registration successful! Your account is pending admin approval. You will be able to access your account once an admin approves it.');
     }
 }

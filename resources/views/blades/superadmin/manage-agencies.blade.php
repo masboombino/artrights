@@ -7,8 +7,8 @@
         @endif
 
         <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 class="text-2xl font-bold" style="color: #193948;">Agencies ({{ $agencies->count() }} / 70 Wilayas)</h2>
-            <a href="{{ route('superadmin.create-agency') }}" class="rounded transition hover:opacity-90" style="background-color: #193948; color: #4FADC0; padding: 0.75rem 1.5rem; text-decoration: none;">
+            <h2 class="text-2xl font-bold" style="color: #D6BFBF;">Agencies ({{ $agencies->count() }} / 70 Wilayas)</h2>
+            <a href="{{ route('superadmin.create-agency') }}" class="rounded transition hover:opacity-90" style="background-color: #D6BFBF; color: #193948; padding: 0.75rem 1.5rem; text-decoration: none;">
                 + Create New Agency
             </a>
         </div>

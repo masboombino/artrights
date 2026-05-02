@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use App\Services\NotificationService;
@@ -157,6 +158,10 @@ class AdminController extends Controller
         $artist->save();
 
         $user = $artist->user;
+        if (!$user) {
+            return redirect()->route('admin.manage-users')->with('error', 'Artist user account was not found.');
+        }
+
         $user->agency_id = $artist->agency_id;
         $user->save();
         $user->assignRole('artist');
@@ -173,19 +178,36 @@ class AdminController extends Controller
         }
 
         if ($artist->user) {
-            NotificationService::send(
-                $artist->user,
-                'Account approved',
-                'Your artist profile has been approved. You can now access your dashboard and upload artworks.',
-                [
-                    'type' => 'artist_account_approved',
+            try {
+                NotificationService::send(
+                    $artist->user,
+                    'Account approved',
+                    'Your artist profile has been approved. You can now access your dashboard and upload artworks.',
+                    [
+                        'type' => 'artist_account_approved',
+                        'artist_id' => $artist->id,
+                        'link' => route('artist.dashboard'),
+                    ]
+                );
+            } catch (\Throwable $e) {
+                Log::warning('Failed to send approval notification.', [
                     'artist_id' => $artist->id,
-                    'link' => route('artist.dashboard'),
-                ]
-            );
+                    'user_id' => $artist->user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
-            // Send approval email to user
-            Mail::to($artist->user->email)->send(new AccountApprovedEmail($artist->user));
+            // Do not fail approval flow if email sending fails
+            try {
+                Mail::to($artist->user->email)->send(new AccountApprovedEmail($artist->user));
+            } catch (\Throwable $e) {
+                Log::warning('Failed to send approval email.', [
+                    'artist_id' => $artist->id,
+                    'user_id' => $artist->user->id,
+                    'email' => $artist->user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         return redirect()->route('admin.manage-users')->with('success', 'Artist approved successfully');

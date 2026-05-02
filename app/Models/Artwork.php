@@ -60,12 +60,12 @@ class Artwork extends Model
      */
     public static function calculatePlatformTax($category)
     {
-        // If category is ID, load the category
-        if (is_int($category)) {
-            $category = Category::find($category);
+        // If category is ID (int or numeric string), load the category model
+        if (is_numeric($category)) {
+            $category = Category::find((int) $category);
         }
 
-        if (!$category) {
+        if (!$category || !($category instanceof Category)) {
             return 100; // Default
         }
 

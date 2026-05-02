@@ -130,6 +130,220 @@
                 border: 2px solid #F3EBDD;
             }
 
+            .notifications-menu-container {
+                position: relative;
+            }
+
+            .notifications-dropdown {
+                position: absolute;
+                top: calc(100% + 0.6rem);
+                right: 0;
+                width: min(380px, 92vw);
+                background: linear-gradient(180deg, #F3EBDD 0%, #e8ddd0 100%);
+                border: 4px solid #ffffff;
+                border-radius: 1rem;
+                box-shadow: 0 10px 28px rgba(25, 57, 72, 0.35);
+                z-index: 1200;
+                opacity: 0;
+                transform: translateY(-8px);
+                pointer-events: none;
+                transition: all 0.2s ease;
+                overflow: hidden;
+            }
+
+            @media (max-width: 768px) {
+                .notifications-menu-container {
+                    position: static;
+                }
+
+                .notifications-dropdown {
+                    position: fixed;
+                    top: 78px;
+                    left: 50% !important;
+                    right: auto !important;
+                    width: min(430px, calc(100vw - 0.8rem)) !important;
+                    max-height: calc(100vh - 70px);
+                    transform: translate(-50%, -8px) !important;
+                    display: flex;
+                    flex-direction: column;
+                    z-index: 2000;
+                }
+
+                .notifications-dropdown.open {
+                    transform: translate(-50%, 0) !important;
+                }
+
+                .notifications-dropdown-list {
+                    max-height: none;
+                    flex: 1;
+                    overflow-y: auto;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .notifications-dropdown {
+                    top: 66px;
+                    width: calc(100vw - 0.5rem) !important;
+                    max-height: calc(100vh - 56px);
+                }
+            }
+
+            .notifications-dropdown.open {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+
+            .notifications-dropdown-header {
+                padding: 0.8rem 1rem;
+                background: linear-gradient(135deg, #193948 0%, #2a4a5a 100%);
+                color: #F3EBDD;
+                font-weight: 700;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.92rem;
+            }
+
+            .notifications-dropdown-list {
+                max-height: 390px;
+                overflow-y: auto;
+                padding: 0.4rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+            }
+
+            .notifications-dropdown-item {
+                display: block;
+                text-decoration: none;
+                color: #193948;
+                background: rgba(255, 255, 255, 0.55);
+                border: 1px solid rgba(25, 57, 72, 0.18);
+                border-radius: 0.7rem;
+                padding: 0.55rem 2rem 0.55rem 0.65rem;
+                transition: all 0.2s ease;
+                position: relative;
+            }
+
+            .notifications-dropdown-item.unread {
+                background: #ffffff;
+                border-color: rgba(79, 173, 192, 0.5);
+                box-shadow: inset 3px 0 0 #4FADC0;
+            }
+
+            .notifications-dropdown-item:hover {
+                transform: translateY(-1px);
+                border-color: rgba(25, 57, 72, 0.4);
+            }
+
+            .notifications-dropdown-item-title {
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin-bottom: 0.2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+            }
+
+            .notifications-dropdown-item-message {
+                font-size: 0.78rem;
+                opacity: 0.9;
+                line-height: 1.3;
+                margin-bottom: 0.2rem;
+            }
+
+            .notifications-dropdown-item-time {
+                font-size: 0.7rem;
+                opacity: 0.65;
+            }
+
+            .notifications-dropdown-delete {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 1.8rem;
+                height: 1.8rem;
+                border: none;
+                border-radius: 0 0.7rem 0 0.55rem;
+                background: rgba(231, 98, 104, 0.22);
+                color: #b93139;
+                font-weight: 800;
+                font-size: 0.95rem;
+                line-height: 1;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+            }
+
+            .notifications-dropdown-delete:hover {
+                background: rgba(231, 98, 104, 0.36);
+                transform: none;
+            }
+
+            .notifications-dropdown-empty {
+                text-align: center;
+                color: #193948;
+                padding: 1rem 0.75rem;
+                font-size: 0.82rem;
+                opacity: 0.75;
+            }
+
+            .notifications-dropdown-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0;
+                padding: 0;
+                border-top: 1px solid rgba(25, 57, 72, 0.16);
+                background: rgba(25, 57, 72, 0.05);
+            }
+
+            .notifications-dropdown-btn {
+                border: none;
+                border-radius: 0;
+                padding: 0.7rem 0.6rem;
+                font-size: 0.76rem;
+                font-weight: 700;
+                cursor: pointer;
+                text-align: center;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                width: 100%;
+                height: 100%;
+            }
+
+            .notifications-dropdown-btn.primary {
+                background: #193948;
+                color: #F3EBDD;
+            }
+
+            .notifications-dropdown-btn.secondary {
+                background: #D6BFBF;
+                color: #193948;
+            }
+
+            .notifications-dropdown-actions form {
+                margin: 0;
+            }
+
+            .notifications-dropdown-actions form:first-child .notifications-dropdown-btn {
+                border-right: 1px solid rgba(25, 57, 72, 0.2);
+            }
+
+            .notifications-dropdown-btn:hover {
+                transform: translateY(-1px);
+                filter: brightness(1.05);
+            }
+
+            .notifications-dropdown-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none;
+                filter: none;
+            }
+
             .profile-button {
                 width: 42px;
                 height: 42px;
@@ -1212,6 +1426,268 @@
                     height: 28px !important;
                 }
             }
+
+            /* Compact, modern layout for non-dashboard/non-notification pages */
+            .main-content.main-content--compact {
+                padding-inline: clamp(0.65rem, 1.8vw, 1.6rem);
+            }
+
+            .main-content.main-content--compact > .max-w-7xl {
+                max-width: 1120px !important;
+                margin-inline: auto;
+                padding-inline: clamp(0.5rem, 1.4vw, 1rem) !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .main-content.main-content--compact > .max-w-7xl > * {
+                width: min(100%, 1000px);
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+            .main-content.main-content--compact .page-container,
+            .main-content.main-content--compact .create-artwork-form {
+                max-width: 1000px;
+                margin-inline: auto !important;
+                border-radius: 1rem;
+                box-shadow: 0 8px 22px rgba(25, 57, 72, 0.12);
+            }
+
+            .main-content.main-content--compact form {
+                max-width: 980px;
+            }
+
+            .main-content.main-content--compact .form-input,
+            .main-content.main-content--compact .form-input-custom,
+            .main-content.main-content--compact input[type="file"] {
+                min-height: 46px;
+                border-radius: 0.6rem;
+            }
+
+            .main-content.main-content--compact textarea.form-input,
+            .main-content.main-content--compact textarea.form-input-custom,
+            .main-content.main-content--compact textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .main-content.main-content--compact h1,
+            .main-content.main-content--compact h2 {
+                font-size: clamp(1.35rem, 1.2rem + 0.8vw, 1.9rem) !important;
+                line-height: 1.25;
+            }
+
+            .main-content.main-content--compact h3 {
+                font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem) !important;
+            }
+
+            @media (max-width: 1024px) {
+                .main-content.main-content--compact > .max-w-7xl {
+                    padding-inline: 0.65rem !important;
+                    align-items: stretch;
+                }
+
+                .main-content.main-content--compact > .max-w-7xl > * {
+                    width: 100%;
+                }
+
+                .main-content.main-content--compact .page-container,
+                .main-content.main-content--compact .create-artwork-form {
+                    max-width: 100%;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .main-content.main-content--compact .form-input,
+                .main-content.main-content--compact .form-input-custom,
+                .main-content.main-content--compact input[type="file"] {
+                    min-height: 42px;
+                }
+
+                .main-content.main-content--compact .page-container,
+                .main-content.main-content--compact .create-artwork-form {
+                    box-shadow: 0 4px 12px rgba(25, 57, 72, 0.1);
+                }
+            }
+
+            /* Premium modern complaint/report styling (all roles, logic unchanged) */
+            .main-content.main-content--cases > .max-w-7xl {
+                max-width: 1220px !important;
+            }
+
+            .main-content.main-content--cases > .max-w-7xl > div {
+                padding: clamp(0.45rem, 1.3vw, 1rem) !important;
+            }
+
+            .main-content.main-content--cases .stat-card,
+            .main-content.main-content--cases .page-container,
+            .main-content.main-content--cases [class*="rounded-lg"],
+            .main-content.main-content--cases [class*="shadow-lg"] {
+                background: linear-gradient(180deg, #f5eee3 0%, #efe5d7 100%) !important;
+                border: 1px solid rgba(25, 57, 72, 0.14) !important;
+                border-radius: 1.15rem !important;
+                box-shadow: 0 10px 30px rgba(17, 37, 48, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+            }
+
+            .main-content.main-content--cases [style*="border: 2px solid #193948"],
+            .main-content.main-content--cases [style*="border:2px solid #193948"],
+            .main-content.main-content--cases [style*="border: 3px solid #193948"] {
+                border-width: 1px !important;
+                border-color: rgba(25, 57, 72, 0.18) !important;
+                border-radius: 1rem !important;
+            }
+
+            .main-content.main-content--cases h2,
+            .main-content.main-content--cases h3 {
+                color: #193948 !important;
+                letter-spacing: 0.01em;
+            }
+
+            .main-content.main-content--cases input[type="text"],
+            .main-content.main-content--cases input[type="email"],
+            .main-content.main-content--cases input[type="url"],
+            .main-content.main-content--cases input[type="number"],
+            .main-content.main-content--cases input[type="file"],
+            .main-content.main-content--cases input[type="date"],
+            .main-content.main-content--cases select,
+            .main-content.main-content--cases textarea {
+                width: 100%;
+                min-height: 46px;
+                border: 1.5px solid rgba(25, 57, 72, 0.25) !important;
+                border-radius: 0.85rem !important;
+                background: #ffffff !important;
+                color: #193948 !important;
+                padding: 0.72rem 0.92rem !important;
+                box-shadow: inset 0 1px 1px rgba(25, 57, 72, 0.06);
+                transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+            }
+
+            .main-content.main-content--cases textarea {
+                min-height: 142px;
+                resize: vertical;
+            }
+
+            .main-content.main-content--cases input:focus,
+            .main-content.main-content--cases select:focus,
+            .main-content.main-content--cases textarea:focus {
+                outline: none;
+                border-color: #4FADC0 !important;
+                box-shadow: 0 0 0 4px rgba(79, 173, 192, 0.2), inset 0 1px 1px rgba(25, 57, 72, 0.05);
+                transform: translateY(-1px);
+            }
+
+            .main-content.main-content--cases .primary-button,
+            .main-content.main-content--cases .secondary-button,
+            .main-content.main-content--cases button[type="submit"],
+            .main-content.main-content--cases a[class*="button"] {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                line-height: 1.2 !important;
+                vertical-align: middle !important;
+                border-radius: 10px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.012em;
+                padding: 0.64rem 1.12rem !important;
+                border: 1px solid transparent !important;
+                box-shadow: 0 6px 16px rgba(25, 57, 72, 0.18);
+                transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            }
+
+            .main-content.main-content--cases .primary-button:hover,
+            .main-content.main-content--cases .secondary-button:hover,
+            .main-content.main-content--cases button[type="submit"]:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(25, 57, 72, 0.2);
+                filter: saturate(1.05);
+            }
+
+            .main-content.main-content--cases [style*="border-bottom: 3px solid"] {
+                border-bottom-width: 2px !important;
+                border-radius: 0.6rem !important;
+            }
+
+            .main-content.main-content--cases table {
+                width: 100% !important;
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
+                border-radius: 1.05rem !important;
+                overflow: hidden;
+                border: 1px solid rgba(25, 57, 72, 0.14) !important;
+                box-shadow: 0 10px 24px rgba(17, 37, 48, 0.12);
+            }
+
+            .main-content.main-content--cases table thead tr {
+                background: linear-gradient(90deg, #163645 0%, #1f4658 100%) !important;
+            }
+
+            .main-content.main-content--cases table th {
+                color: #f2e9dc !important;
+                font-size: 0.79rem !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 0.88rem 0.7rem !important;
+                border-right: 1px solid rgba(79, 173, 192, 0.2) !important;
+            }
+
+            .main-content.main-content--cases table th:last-child {
+                border-right: none !important;
+            }
+
+            .main-content.main-content--cases table td {
+                background: #fff;
+                color: #193948 !important;
+                border-bottom: 1px solid rgba(25, 57, 72, 0.08) !important;
+                border-right: 1px solid rgba(25, 57, 72, 0.07) !important;
+                padding: 0.88rem 0.72rem !important;
+                vertical-align: middle;
+            }
+
+            .main-content.main-content--cases table td:last-child {
+                border-right: none !important;
+            }
+
+            .main-content.main-content--cases table tbody tr:nth-child(even) td {
+                background: #fcfaf6;
+            }
+
+            .main-content.main-content--cases table tbody tr:hover td {
+                background: #f7efe3 !important;
+            }
+
+            .main-content.main-content--cases span[style*="border-radius: 20px"],
+            .main-content.main-content--cases span[style*="border-radius:20px"],
+            .main-content.main-content--cases .status-badge {
+                border-radius: 999px !important;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: 0.28rem;
+                padding: 0.32rem 0.72rem !important;
+                line-height: 1.1;
+                white-space: nowrap;
+                font-weight: 700 !important;
+                box-shadow: 0 3px 10px rgba(25, 57, 72, 0.14);
+            }
+
+            .main-content.main-content--cases [style*="overflow-x: auto"] {
+                border-radius: 1rem !important;
+            }
+
+            @media (max-width: 768px) {
+                .main-content.main-content--cases > .max-w-7xl {
+                    max-width: 100% !important;
+                }
+
+                .main-content.main-content--cases table th,
+                .main-content.main-content--cases table td {
+                    padding: 0.68rem 0.5rem !important;
+                    font-size: 0.83rem !important;
+                }
+            }
         </style>
     </head>
     <body>
@@ -1266,18 +1742,25 @@
                             @php
                                 $user = Auth::user();
                                 $notificationsRoute = null;
+                                $routePrefix = 'admin';
                                 if ($user->hasRole('super_admin')) {
                                     $notificationsRoute = route('superadmin.notifications');
+                                    $routePrefix = 'superadmin';
                                 } elseif ($user->hasRole('admin')) {
                                     $notificationsRoute = route('admin.notifications');
+                                    $routePrefix = 'admin';
                                 } elseif ($user->hasRole('gestionnaire')) {
                                     $notificationsRoute = route('gestionnaire.notifications');
+                                    $routePrefix = 'gestionnaire';
                                 } elseif ($user->hasRole('artist')) {
                                     $notificationsRoute = route('artist.notifications');
+                                    $routePrefix = 'artist';
                                 } elseif ($user->hasRole('agent')) {
                                     $notificationsRoute = route('agent.notifications');
+                                    $routePrefix = 'agent';
                                 }
                                 $unreadNotifications = $user?->notifications()->where('is_read', false)->count() ?? 0;
+                                $recentNotifications = $user?->notifications()->latest()->limit(6)->get() ?? collect();
                                 
                                 // Complaints route for Super Admin, Admin, and Gestionnaire
                                 $complaintsRoute = null;
@@ -1357,17 +1840,66 @@
                                 @endif
 
                                 @if($notificationsRoute)
-                                    <a href="{{ $notificationsRoute }}" class="notification-icon header-notifications-btn" aria-label="Notifications" title="Notifications">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                        @if($unreadNotifications > 0)
-                                            <span class="notification-badge">
-                                                {{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}
-                                            </span>
-                                        @endif
-                                    </a>
+                                    <div class="notifications-menu-container header-notifications-btn" id="notificationsMenuContainer">
+                                        <button type="button" class="notification-icon" id="notificationsToggle" aria-label="Notifications" title="Notifications" aria-expanded="false">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            @if($unreadNotifications > 0)
+                                                <span class="notification-badge">
+                                                    {{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}
+                                                </span>
+                                            @endif
+                                        </button>
+
+                                        <div class="notifications-dropdown" id="notificationsDropdown">
+                                            <div class="notifications-dropdown-header">
+                                                <span>Notifications</span>
+                                                <span>{{ $unreadNotifications }} unread</span>
+                                            </div>
+
+                                            <div class="notifications-dropdown-list">
+                                                @forelse($recentNotifications as $notification)
+                                                    <div class="notifications-dropdown-item {{ $notification->is_read ? '' : 'unread' }}">
+                                                        <form method="POST" action="{{ route($routePrefix . '.notifications.delete', $notification->id) }}" style="margin: 0;" onsubmit="event.stopPropagation(); return confirm('Delete this notification?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="notifications-dropdown-delete" title="Delete notification">×</button>
+                                                        </form>
+                                                        <a href="{{ route($routePrefix . '.notifications.view', $notification->id) }}" style="display:block; text-decoration:none; color:inherit;">
+                                                            <div class="notifications-dropdown-item-title">
+                                                                @if(!$notification->is_read) • @endif
+                                                                {{ \Illuminate\Support\Str::limit($notification->title, 48) }}
+                                                            </div>
+                                                            <div class="notifications-dropdown-item-message">
+                                                                {{ \Illuminate\Support\Str::limit($notification->message, 88) }}
+                                                            </div>
+                                                            <div class="notifications-dropdown-item-time">
+                                                                {{ $notification->created_at?->diffForHumans() }}
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                @empty
+                                                    <div class="notifications-dropdown-empty">
+                                                        No notifications yet.
+                                                    </div>
+                                                @endforelse
+                                            </div>
+
+                                            <div class="notifications-dropdown-actions">
+                                                <form method="POST" action="{{ route($routePrefix . '.notifications.mark-all-read') }}" style="margin: 0;">
+                                                    @csrf
+                                                    <button type="submit" class="notifications-dropdown-btn primary" {{ $unreadNotifications < 1 ? 'disabled' : '' }}>
+                                                        Mark all read
+                                                    </button>
+                                                </form>
+                                                <a href="{{ $notificationsRoute }}" class="notifications-dropdown-btn secondary">
+                                                    Open all
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
 
                                 <form method="POST" action="{{ route('logout') }}" class="inline header-logout-btn">
@@ -1561,8 +2093,44 @@
                 </div>
             @endauth
 
+            @php
+                $normalizedPageTitle = strtolower(trim((string) ($pageTitle ?? '')));
+                $isDashboardPage = str_contains($normalizedPageTitle, 'dashboard');
+                $isNotificationsPage = str_contains($normalizedPageTitle, 'notification');
+                $isPvRoute = request()->routeIs(
+                    '*.pvs.*',
+                    '*.pv.*',
+                    '*/pvs*',
+                    '*/pv*'
+                );
+                $isPvTitle = str_contains($normalizedPageTitle, ' pv')
+                    || str_starts_with($normalizedPageTitle, 'pv')
+                    || str_contains($normalizedPageTitle, 'pvs');
+                $isPvPage = $isPvRoute || $isPvTitle;
+                $isSuperAdminPage = request()->routeIs('superadmin.*');
+                $isSuperAdminCompactException = request()->routeIs(
+                    'superadmin.footer-settings',
+                    'superadmin.profile'
+                );
+                $isComplaintOrReportPage = request()->routeIs(
+                    '*.complaints.*',
+                    '*.reports.*',
+                    '*.reports-and-complaints.*',
+                    '*.manage-complaints',
+                    '*.admin-complaints',
+                    '*.superadmin-complaints',
+                    '*.view-admin-complaint',
+                    '*.view-complaint',
+                    '*.create-complaint-or-report'
+                );
+                $useCompactLayout = ! $isDashboardPage
+                    && ! $isNotificationsPage
+                    && ! $isPvPage
+                    && (! $isSuperAdminPage || $isSuperAdminCompactException);
+            @endphp
+
             <!-- Page Content -->
-            <main class="main-content">
+            <main class="main-content {{ $useCompactLayout ? 'main-content--compact' : '' }} {{ $isComplaintOrReportPage ? 'main-content--cases' : '' }}">
                 <div class="max-w-7xl mx-auto" style="padding: 0 clamp(1rem, 2vw, 2rem); width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: hidden;">
                     {{ $slot }}
                 </div>
@@ -1576,10 +2144,20 @@
                 <div class="footer-content">
                     <div class="footer-top">
                         <div style="display: flex; align-items: center; gap: 0; margin: 0; padding: 0;">
-                            @if($footerSettings->logo_path)
+                            @php
+                                $footerLogoUrl = null;
+                                if (!empty($footerSettings->logo_path)) {
+                                    $normalizedLogoPath = ltrim($footerSettings->logo_path, '/');
+                                    $logoFullPath = storage_path('app/public/' . $normalizedLogoPath);
+                                    if (file_exists($logoFullPath)) {
+                                        $footerLogoUrl = route('media.show', ['path' => $normalizedLogoPath]);
+                                    }
+                                }
+                            @endphp
+                            @if($footerLogoUrl)
                                 <div class="footer-logo-section" style="margin: 0; padding: 0;">
                                     <a href="{{ $footerSettings->ayrade_url ?? $footerSettings->website_url ?? url('/') }}" target="_blank" style="margin: 0; padding: 0; display: block;">
-                                        <img src="{{ asset('storage/' . $footerSettings->logo_path) }}" alt="Ayrade Logo" class="footer-logo" style="margin: 0; display: block;">
+                                        <img src="{{ $footerLogoUrl }}" alt="Ayrade Logo" class="footer-logo" style="margin: 0; display: block;">
                                     </a>
                                 </div>
                             @endif
@@ -1648,6 +2226,9 @@
                     const drawerToggleRight = document.getElementById('drawerToggleRight');
                     const drawer = document.getElementById('drawer');
                     const drawerOverlay = document.getElementById('drawerOverlay');
+                    const notificationsContainer = document.getElementById('notificationsMenuContainer');
+                    const notificationsToggle = document.getElementById('notificationsToggle');
+                    const notificationsDropdown = document.getElementById('notificationsDropdown');
                     let isOpen = false;
 
                     if ((!drawerToggleLeft && !drawerToggleRight) || !drawer || !drawerOverlay) {
@@ -1685,6 +2266,39 @@
                             toggleDrawer();
                         }
                     });
+
+                    if (notificationsContainer && notificationsToggle && notificationsDropdown) {
+                        const closeNotifications = () => {
+                            notificationsDropdown.classList.remove('open');
+                            notificationsToggle.setAttribute('aria-expanded', 'false');
+                        };
+
+                        notificationsToggle.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const willOpen = !notificationsDropdown.classList.contains('open');
+                            closeNotifications();
+                            if (willOpen) {
+                                notificationsDropdown.classList.add('open');
+                                notificationsToggle.setAttribute('aria-expanded', 'true');
+                            }
+                        });
+
+                        notificationsDropdown.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+
+                        document.addEventListener('click', function(e) {
+                            if (!notificationsContainer.contains(e.target)) {
+                                closeNotifications();
+                            }
+                        });
+
+                        document.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                closeNotifications();
+                            }
+                        });
+                    }
                 });
             </script>
         @endauth

@@ -52,13 +52,7 @@
         }
 
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #E76268 0%, #D6BFBF 50%, #4FADC0 100%);
+            display: none;
         }
 
         .stat-card:hover {
@@ -134,18 +128,11 @@
         }
 
         .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #E76268 0%, #4FADC0 100%);
-            border-radius: 2px;
+            display: none;
         }
 
         .btn-submit {
-            background-color: #E76268;
+            background-color: #9f4046;
             color: white;
             padding: 0.625rem 1.25rem;
             border-radius: 8px;
@@ -157,13 +144,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(231, 98, 104, 0.3);
+            box-shadow: 0 2px 8px rgba(25, 57, 72, 0.35);
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 98, 104, 0.4);
-            background-color: #d4555a;
+            box-shadow: 0 4px 12px rgba(25, 57, 72, 0.45);
+            background-color: #86363b;
         }
 
         .complaint-card {
@@ -229,8 +216,8 @@
         }
 
         .btn-response-toggle {
-            background-color: #4FADC0;
-            color: #193948;
+            background-color: #2d6f82;
+            color: #F3EBDD;
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
             border: 2px solid #193948;
@@ -238,7 +225,7 @@
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(79, 173, 192, 0.3);
+            box-shadow: 0 2px 4px rgba(25, 57, 72, 0.35);
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
@@ -246,8 +233,8 @@
 
         .btn-response-toggle:hover {
             transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(79, 173, 192, 0.4);
-            background-color: #3d9db0;
+            box-shadow: 0 3px 8px rgba(25, 57, 72, 0.45);
+            background-color: #255b6a;
         }
 
         .response-content-hidden {
@@ -443,7 +430,7 @@
         }
 
         .btn-delete-small {
-            background-color: #E76268;
+            background-color: #9f4046;
             color: white;
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
@@ -452,7 +439,7 @@
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(231, 98, 104, 0.3);
+            box-shadow: 0 2px 4px rgba(25, 57, 72, 0.35);
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
@@ -460,13 +447,13 @@
 
         .btn-delete-small:hover {
             transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(231, 98, 104, 0.4);
-            background-color: #d4555a;
+            box-shadow: 0 3px 8px rgba(25, 57, 72, 0.45);
+            background-color: #86363b;
         }
 
         .btn-view-small {
-            background-color: #4FADC0;
-            color: #193948;
+            background-color: #2d6f82;
+            color: #F3EBDD;
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
             border: 2px solid #193948;
@@ -474,7 +461,7 @@
             font-size: 0.75rem;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(79, 173, 192, 0.3);
+            box-shadow: 0 2px 4px rgba(25, 57, 72, 0.35);
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
@@ -482,8 +469,8 @@
 
         .btn-view-small:hover {
             transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(79, 173, 192, 0.4);
-            background-color: #3d9db0;
+            box-shadow: 0 3px 8px rgba(25, 57, 72, 0.45);
+            background-color: #255b6a;
         }
 
         .empty-state {
@@ -673,7 +660,6 @@
                     <div style="flex: 1;">
                         <div class="complaint-header-top">
                             <div class="complaint-badges">
-                                <span class="badge badge-complaint">Complaint</span>
                                 <span class="badge badge-{{ strtolower(str_replace('_', '-', $item->status)) }}">
                                     @if($item->status === 'PENDING')
                                         ⏳ {{ str_replace('_', ' ', $item->status) }}

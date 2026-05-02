@@ -11,56 +11,65 @@
         <!-- First Name -->
         <div class="mb-4">
             <x-input-label for="first_name" :value="__('First Name')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="first_name" class="block w-full px-4 py-3" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="given-name" style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="first_name" class="block w-full px-4 py-3" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="given-name" 
+            style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
         </div>
 
         <!-- Last Name -->
         <div class="mb-4">
             <x-input-label for="last_name" :value="__('Last Name')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="last_name" class="block w-full px-4 py-3" type="text" name="last_name" :value="old('last_name')" required autocomplete="family-name" style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="last_name" class="block w-full px-4 py-3" type="text" name="last_name" :value="old('last_name')" required autocomplete="family-name"
+             style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important;
+              border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
         </div>
 
         <!-- Stage Name -->
         <div class="mb-4">
             <x-input-label for="stage_name" :value="__('Stage Name (Optional)')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="stage_name" class="block w-full px-4 py-3" type="text" name="stage_name" :value="old('stage_name')" autocomplete="nickname" style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="stage_name" class="block w-full px-4 py-3" type="text" name="stage_name" :value="old('stage_name')" autocomplete="nickname" 
+            style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('stage_name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mb-4">
             <x-input-label for="email" :value="__('Email')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="email" class="block w-full px-4 py-3" type="email" name="email" :value="old('email')" required autocomplete="username" style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="email" class="block w-full px-4 py-3" type="email" name="email" :value="old('email')" required autocomplete="username"
+             style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Phone -->
         <div class="mb-4">
             <x-input-label for="phone" :value="__('Phone')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="phone" class="block w-full px-4 py-3" type="text" name="phone" :value="old('phone')" required autocomplete="tel" style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="phone" class="block w-full px-4 py-3" type="text" name="phone" :value="old('phone')" required autocomplete="tel"
+             style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
 
         <!-- Birth Date -->
         <div class="mb-4">
             <x-input-label for="birth_date" :value="__('Birth Date')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="birth_date" class="block w-full px-4 py-3" type="date" name="birth_date" :value="old('birth_date')" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="birth_date" class="block w-full px-4 py-3" type="date" name="birth_date" :value="old('birth_date')"
+             required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
         </div>
 
         <!-- Birth Place -->
         <div class="mb-4">
             <x-input-label for="birth_place" :value="__('Birth Place')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="birth_place" class="block w-full px-4 py-3" type="text" name="birth_place" :value="old('birth_place')" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="birth_place" class="block w-full px-4 py-3" type="text" name="birth_place" :value="old('birth_place')" 
+            required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('birth_place')" class="mt-2" />
         </div>
 
         <!-- Address -->
         <div class="mb-4">
             <x-input-label for="address" :value="__('Current Address')" style="color: #36454f; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;" />
-            <x-text-input id="address" class="block w-full px-4 py-3" type="text" name="address" :value="old('address')" required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
+            <x-text-input id="address" class="block w-full px-4 py-3" type="text" name="address" :value="old('address')"
+             required style="color: #36454f !important; background-color: #ffffff !important; border: 2px solid #193948 !important; border-radius: 8px !important; font-size: 1rem;" />
             <x-input-error :messages="$errors->get('address')" class="mt-2" />
         </div>
 

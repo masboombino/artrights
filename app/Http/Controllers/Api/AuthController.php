@@ -89,7 +89,7 @@ class AuthController extends Controller
             'birth_place' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'agency_id' => 'required|exists:agencies,id',
-            'identity_document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'identity_document' => 'required|file|mimes:jpg,jpeg,png,gif,webp,bmp,heic,heif,tif,tiff,pdf,doc,docx|max:5120',
             'bank_account_number' => 'required|string|max:255',
             'full_name_on_account' => 'required|string|max:255',
             'bank_account_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',

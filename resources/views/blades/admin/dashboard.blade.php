@@ -131,7 +131,7 @@
         .stat-card {
             background: linear-gradient(135deg, #F3EBDD 0%, #e8ddd0 100%);
             border-radius: 1.25rem;
-            padding: 2rem;
+            padding: 1rem 1.1rem;
             box-shadow: 0 4px 16px rgba(25, 57, 72, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -139,6 +139,7 @@
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
             border: 2px solid transparent;
+            text-align: left;
         }
 
         .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -177,14 +178,15 @@
         }
 
         .stat-card-icon {
-            width: 60px;
-            height: 60px;
+            width: 44px;
+            height: 44px;
             border-radius: 1rem;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 1.45rem;
+            margin: 0 0.55rem 0.35rem 0;
+            vertical-align: middle;
             background: linear-gradient(135deg, #193948 0%, #2a4a5a 100%);
             box-shadow: 0 4px 12px rgba(25, 57, 72, 0.3);
             transition: all 0.3s ease;
@@ -196,40 +198,42 @@
         }
 
         .stat-card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #193948;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.35rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             opacity: 0.8;
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            vertical-align: middle;
         }
 
         .stat-card-value {
-            font-size: 3rem;
+            font-size: 2.15rem;
             font-weight: 800;
             color: #193948;
-            margin: 1rem 0;
+            margin: 0.3rem 0;
             line-height: 1;
             text-shadow: 1px 1px 2px rgba(25, 57, 72, 0.1);
+            text-align: right;
+            width: 100%;
         }
 
         .stat-card-description {
-            font-size: 0.9rem;
-            color: #193948;
-            opacity: 0.7;
-            margin-top: 0.5rem;
-            font-weight: 500;
+            display: none;
         }
 
         .stat-card-footer {
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin-top: 0.35rem;
+            padding-top: 0.45rem;
             border-top: 1px solid rgba(25, 57, 72, 0.1);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: #193948;
             opacity: 0.6;
         }
@@ -413,11 +417,11 @@
             }
 
             .stat-card {
-                padding: 1.5rem;
+                padding: 0.95rem;
             }
 
             .stat-card-value {
-                font-size: 2.5rem;
+                font-size: 1.95rem;
             }
 
             .large-stat-card {

@@ -131,7 +131,7 @@
         .stat-card {
             background: linear-gradient(135deg, #F3EBDD 0%, #e8ddd0 100%);
             border-radius: 1.25rem;
-            padding: 2rem;
+            padding: 1rem 1.1rem;
             box-shadow: 0 4px 16px rgba(25, 57, 72, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -139,6 +139,16 @@
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
             border: 2px solid transparent;
+            text-align: left;
+        }
+
+        .stat-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 0.35rem;
+            width: 100%;
         }
 
         .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -175,14 +185,14 @@
         }
 
         .stat-card-icon {
-            width: 60px;
-            height: 60px;
+            width: 44px;
+            height: 44px;
             border-radius: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 1.45rem;
+            margin-bottom: 0.65rem;
             background: linear-gradient(135deg, #193948 0%, #2a4a5a 100%);
             box-shadow: 0 4px 12px rgba(25, 57, 72, 0.3);
             transition: all 0.3s ease;
@@ -194,40 +204,38 @@
         }
 
         .stat-card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #193948;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             opacity: 0.8;
         }
 
         .stat-card-value {
-            font-size: 3rem;
+            font-size: 2.15rem;
             font-weight: 800;
             color: #193948;
-            margin: 1rem 0;
+            margin: 0.35rem 0;
             line-height: 1;
             text-shadow: 1px 1px 2px rgba(25, 57, 72, 0.1);
+            text-align: right;
+            width: 100%;
         }
 
         .stat-card-description {
-            font-size: 0.9rem;
-            color: #193948;
-            opacity: 0.7;
-            margin-top: 0.5rem;
-            font-weight: 500;
+            display: none;
         }
 
         .stat-card-footer {
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin-top: 0.35rem;
+            padding-top: 0.45rem;
             border-top: 1px solid rgba(25, 57, 72, 0.1);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: #193948;
             opacity: 0.6;
         }
@@ -386,11 +394,11 @@
             }
 
             .stat-card {
-                padding: 1.5rem;
+                padding: 0.95rem;
             }
 
             .stat-card-value {
-                font-size: 2.5rem;
+                font-size: 1.95rem;
             }
 
             .large-stat-card {
@@ -469,8 +477,10 @@
         <!-- Main Statistics Grid -->
         <div class="stats-grid">
             <a href="{{ route('superadmin.manage-categories') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">📁</div>
-                <div class="stat-card-title">Categories</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">📁</div>
+                    <div class="stat-card-title">Categories</div>
+                </div>
                 <div class="stat-card-value">{{ $categoriesCount }}</div>
                 <div class="stat-card-description">Artwork categories</div>
                 <div class="stat-card-footer">
@@ -480,8 +490,10 @@
             </a>
 
             <a href="{{ route('superadmin.manage-device-types') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">📱</div>
-                <div class="stat-card-title">Devices</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">📱</div>
+                    <div class="stat-card-title">Devices</div>
+                </div>
                 <div class="stat-card-value">{{ \App\Models\DeviceType::count() }}</div>
                 <div class="stat-card-description">Device types configured</div>
                 <div class="stat-card-footer">
@@ -491,15 +503,19 @@
             </a>
 
             <div class="stat-card">
-                <div class="stat-card-icon">👥</div>
-                <div class="stat-card-title">Total Missions</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">👥</div>
+                    <div class="stat-card-title">Total Missions</div>
+                </div>
                 <div class="stat-card-value">{{ $missionsCount }}</div>
                 <div class="stat-card-description">{{ $missionsInProgress }} currently active</div>
             </div>
 
             <a href="{{ route('superadmin.manage-pvs') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">📋</div>
-                <div class="stat-card-title">PVs</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">📋</div>
+                    <div class="stat-card-title">PVs</div>
+                </div>
                 <div class="stat-card-value">{{ $pvsCount }}</div>
                 <div class="stat-card-description">Process verification records</div>
                 <div class="stat-card-footer">
@@ -509,8 +525,10 @@
             </a>
 
             <a href="{{ route('superadmin.all-wilayas') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">🗺️</div>
-                <div class="stat-card-title">Wilayas</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">🗺️</div>
+                    <div class="stat-card-title">Wilayas</div>
+                </div>
                 <div class="stat-card-value">{{ $wilayasCount }}</div>
                 <div class="stat-card-description">Algerian provinces</div>
                 <div class="stat-card-footer">
@@ -520,8 +538,10 @@
             </a>
 
             <a href="{{ route('superadmin.manage-agencies') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">🏢</div>
-                <div class="stat-card-title">Agencies</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">🏢</div>
+                    <div class="stat-card-title">Agencies</div>
+                </div>
                 <div class="stat-card-value">{{ $agenciesCount }}</div>
                 <div class="stat-card-description">Total registered agencies</div>
                 <div class="stat-card-footer">
@@ -531,8 +551,10 @@
             </a>
 
             <a href="{{ route('superadmin.manage-transfer-workers') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">🔄</div>
-                <div class="stat-card-title">Transfer Workers</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">🔄</div>
+                    <div class="stat-card-title">Transfer Workers</div>
+                </div>
                 <div class="stat-card-value">{{ $workersCount }}</div>
                 <div class="stat-card-description">Total workers in system</div>
                 <div class="stat-card-footer">
@@ -542,8 +564,10 @@
             </a>
 
             <a href="{{ route('superadmin.manage-law') }}" class="stat-card clickable" style="text-decoration: none;">
-                <div class="stat-card-icon">⚖️</div>
-                <div class="stat-card-title">Manage Law</div>
+                <div class="stat-card-head">
+                    <div class="stat-card-icon">⚖️</div>
+                    <div class="stat-card-title">Manage Law</div>
+                </div>
                 <div class="stat-card-value">📜</div>
                 <div class="stat-card-description">Legal content management</div>
                 <div class="stat-card-footer">

@@ -120,7 +120,6 @@
                         <th>Description</th>
                         <th>Reference</th>
                         <th>Amount</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,7 +142,7 @@
                                     ];
                                     $type = $transaction->type ?? ($transaction->pv_id ? 'PV_PAYMENT' : ($transaction->payment_method === 'WALLET_RECHARGE' ? 'WALLET_RECHARGE' : 'OTHER'));
                                 @endphp
-                                <span style="background-color: {{ $typeColors[$type] ?? '#193948' }}; color: white; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600;">
+                                <span style="background-color: {{ $typeColors[$type] ?? '#193948' }}; color: white; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; display: inline-block; white-space: nowrap; line-height: 1.2;">
                                     {{ $typeLabels[$type] ?? 'Other' }}
                                 </span>
                             </td>
@@ -173,15 +172,10 @@
                             <td style="font-weight: 700; color: {{ $transaction->amount < 0 ? '#E76268' : '#10b981' }};">
                                 {{ $transaction->amount < 0 ? '-' : '+' }}{{ number_format(abs($transaction->amount), 2) }} DZD
                             </td>
-                            <td>
-                                <span class="status-badge">
-                                    {{ $transaction->payment_status ?? 'N/A' }}
-                                </span>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
                                 <p style="color: #193948; font-size: 1rem;">No transactions found</p>
                             </td>
                         </tr>
